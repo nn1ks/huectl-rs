@@ -7,8 +7,8 @@ use structopt::StructOpt;
 pub enum Subcommand {
     Discover(Discover),
     Register(Register),
-    GetConfig(GetConfig),
     SetConfig(SetConfig),
+    GetConfig(GetConfig),
     SetLight(SetLight),
     GetLight(GetLight),
     SearchLight(SearchLight),
@@ -36,7 +36,7 @@ pub struct Register {
     pub set_env: bool,
 }
 
-/// Sets the attributes of the bridge configuration
+/// Modifies attributes of the bridge configuration
 #[derive(Debug, StructOpt)]
 pub struct SetConfig {
     /// Sets the name of the bridge
@@ -133,7 +133,7 @@ pub struct GetConfig {
     pub json: bool,
 }
 
-/// Sets the state of a light
+/// Modifies the state and attributes of a light
 #[derive(Debug, StructOpt)]
 pub struct SetLight {
     /// Identifier of the light
@@ -216,7 +216,7 @@ impl SetLight {
     }
 }
 
-/// Prints the state of a light
+/// Prints the state and attributes of a light
 #[derive(Debug, StructOpt)]
 pub struct GetLight {
     /// Identifier of the light, if ommited all lights are selected
@@ -268,7 +268,7 @@ impl CreateGroup {
     }
 }
 
-/// Sets the state of a group
+/// Modifies the state and attributes of a group
 #[derive(Debug, StructOpt)]
 pub struct SetGroup {
     /// Identifier of the group
@@ -420,7 +420,7 @@ impl CreateScene {
     }
 }
 
-/// Sets the state and attributes of a scene
+/// Modifies the state and attributes of a scene
 #[derive(Debug, StructOpt)]
 pub struct SetScene {
     /// Identifier of the scene

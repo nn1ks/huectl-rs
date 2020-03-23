@@ -1,7 +1,6 @@
 use crate::arg;
 use huelib::{CoordinateModifierType, ModifierType};
 
-// TODO: Fix calling of this method twice
 fn parse_with_suffix<T: std::str::FromStr>(
     value_str: &str,
     error: arg::ParseError,
