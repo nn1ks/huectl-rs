@@ -27,5 +27,6 @@ fn main() {
         Subcommand::CreateScene(v) => command::scene::create(v),
         Subcommand::SetScene(v) => command::scene::set(v),
         Subcommand::GetScene(v) => command::scene::get(v),
+        Subcommand::DeleteScene(v) => command::scene::delete(v),
     };
 }

@@ -91,3 +91,10 @@ pub fn get(arg: subcommand::GetScene) {
         },
     };
 }
+
+pub fn delete(arg: subcommand::DeleteScene) {
+    match util::get_bridge().delete_scene(&arg.id) {
+        Ok(_) => println!("Deleted scene {}", arg.id),
+        Err(e) => util::print_err("Failed to delete scene", e),
+    }
+}

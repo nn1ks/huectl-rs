@@ -20,6 +20,7 @@ pub enum Subcommand {
     CreateScene(CreateScene),
     SetScene(SetScene),
     GetScene(GetScene),
+    DeleteScene(DeleteScene),
 }
 
 /// Discovers bridges in the local network
@@ -467,4 +468,11 @@ pub struct GetScene {
     /// Prints the output in JSON format
     #[structopt(long, short)]
     pub json: bool,
+}
+
+/// Deletes a scene
+#[derive(Debug, StructOpt)]
+pub struct DeleteScene {
+    /// Identifier of the scene
+    pub id: String,
 }
