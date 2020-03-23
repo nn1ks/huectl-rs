@@ -1,5 +1,6 @@
 # huectl-rs
 
+[![Version](https://img.shields.io/github/v/release/yuqio/huectl-rs?label=version)](https://github.com/yuqio/huectl-rs/releases)
 [![License](https://img.shields.io/github/license/yuqio/huectl-rs.svg)](https://github.com/yuqio/huectl-rs/blob/master/LICENSE)
 [![Lines of code](https://tokei.rs/b1/github/yuqio/huectl-rs)]()
 
