@@ -15,6 +15,7 @@ pub enum Subcommand {
     Light(Light),
     Group(Group),
     Scene(Scene),
+    Capabilities(Capabilities),
 }
 
 /// Discovers bridges in the local network
@@ -63,4 +64,10 @@ pub enum Scene {
     Get(scene::Get),
     Create(scene::Create),
     Delete(scene::Delete),
+}
+
+/// Prints capabilities of resources
+#[derive(Debug, StructOpt)]
+pub enum Capabilities {
+    Get(capabilities::Get),
 }

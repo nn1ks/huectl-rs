@@ -36,5 +36,8 @@ fn main() {
             subcommand::Scene::Create(v) => command::scene::create(v),
             subcommand::Scene::Delete(v) => command::scene::delete(v),
         },
+        Subcommand::Capabilities(v) => match v {
+            subcommand::Capabilities::Get(v) => command::capabilities::get(v),
+        },
     };
 }
