@@ -28,21 +28,12 @@ FLAGS:
     -V, --version    Prints version information
 
 SUBCOMMANDS:
-    create-group    Creates a group
-    create-scene    Creates a scene
-    delete-group    Deletes a group
-    delete-light    Deletes a light
-    delete-scene    Deletes a scene
+    capabilities    Prints capabilities of resources
+    config          Modifies or prints the bridge configuration
     discover        Discovers bridges in the local network
-    get-config      Prints the bridge configuration
-    get-group       Prints the state and attributes of a group
-    get-light       Prints the state and attributes of a light
-    get-scene       Prints the state and attributes of a scene
+    group           Modifies, prints, creates or deletes groups
     help            Prints this message or the help of the given subcommand(s)
+    light           Modifies, prints, searches or deletes lights
     register        Registers a new user on a bridge
-    search-light    Searches for new lights
-    set-config      Modifies attributes of the bridge configuration
-    set-group       Modifies the state and attributes of a group
-    set-light       Modifies the state and attributes of a light
-    set-scene       Modifies the state and attributes of a scene
+    scene           Modifies, prints, creates or deletes scenes
 ```
