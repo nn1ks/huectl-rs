@@ -1,6 +1,4 @@
-use crate::arg::subcommand;
-use crate::config;
-use crate::util;
+use crate::{arg::subcommand, config, util};
 
 pub fn discover() {
     let ip_addresses = match huelib::bridge::discover() {

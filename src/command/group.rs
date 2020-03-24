@@ -1,5 +1,4 @@
-use crate::arg::subcommand;
-use crate::util;
+use crate::{arg::subcommand, util};
 use std::fmt;
 
 pub struct Modifier {
@@ -34,14 +33,7 @@ impl fmt::Display for Group {
     }
 }
 
-pub fn create(arg: subcommand::CreateGroup) {
-    match util::get_bridge().create_group(&arg.to_creator()) {
-        Ok(v) => println!("Created group {}", v),
-        Err(e) => util::print_err("Failed to create group", e),
-    }
-}
-
-pub fn set(arg: subcommand::SetGroup) {
+pub fn set(arg: subcommand::group::Set) {
     let bridge = util::get_bridge();
     let modifier = arg.to_modifier();
     let mut responses = Vec::new();
@@ -66,7 +58,7 @@ pub fn set(arg: subcommand::SetGroup) {
     }
 }
 
-pub fn get(arg: subcommand::GetGroup) {
+pub fn get(arg: subcommand::group::Get) {
     let bridge = util::get_bridge();
     match arg.id {
         Some(v) => match bridge.get_group(&v) {
@@ -100,7 +92,14 @@ pub fn get(arg: subcommand::GetGroup) {
     };
 }
 
-pub fn delete(arg: subcommand::DeleteGroup) {
+pub fn create(arg: subcommand::group::Create) {
+    match util::get_bridge().create_group(&arg.to_creator()) {
+        Ok(v) => println!("Created group {}", v),
+        Err(e) => util::print_err("Failed to create group", e),
+    }
+}
+
+pub fn delete(arg: subcommand::group::Delete) {
     match util::get_bridge().delete_group(&arg.id) {
         Ok(_) => println!("Deleted group {}", arg.id),
         Err(e) => util::print_err("Failed to delete group", e),

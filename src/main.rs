@@ -6,7 +6,7 @@ mod command;
 mod config;
 mod util;
 
-use arg::subcommand::Subcommand;
+use arg::subcommand::{self, Subcommand};
 use structopt::StructOpt;
 
 fn main() {
@@ -14,19 +14,27 @@ fn main() {
     match args.subcommand {
         Subcommand::Discover(_) => command::bridge::discover(),
         Subcommand::Register(v) => command::bridge::register(v),
-        Subcommand::SetConfig(v) => command::config::set(v),
-        Subcommand::GetConfig(v) => command::config::get(v),
-        Subcommand::SetLight(v) => command::light::set(v),
-        Subcommand::GetLight(v) => command::light::get(v),
-        Subcommand::SearchLight(v) => command::light::search(v),
-        Subcommand::DeleteLight(v) => command::light::delete(v),
-        Subcommand::CreateGroup(v) => command::group::create(v),
-        Subcommand::SetGroup(v) => command::group::set(v),
-        Subcommand::GetGroup(v) => command::group::get(v),
-        Subcommand::DeleteGroup(v) => command::group::delete(v),
-        Subcommand::CreateScene(v) => command::scene::create(v),
-        Subcommand::SetScene(v) => command::scene::set(v),
-        Subcommand::GetScene(v) => command::scene::get(v),
-        Subcommand::DeleteScene(v) => command::scene::delete(v),
+        Subcommand::Config(v) => match v {
+            subcommand::Config::Set(v) => command::config::set(v),
+            subcommand::Config::Get(v) => command::config::get(v),
+        },
+        Subcommand::Light(v) => match v {
+            subcommand::Light::Set(v) => command::light::set(v),
+            subcommand::Light::Get(v) => command::light::get(v),
+            subcommand::Light::Search(v) => command::light::search(v),
+            subcommand::Light::Delete(v) => command::light::delete(v),
+        },
+        Subcommand::Group(v) => match v {
+            subcommand::Group::Set(v) => command::group::set(v),
+            subcommand::Group::Get(v) => command::group::get(v),
+            subcommand::Group::Create(v) => command::group::create(v),
+            subcommand::Group::Delete(v) => command::group::delete(v),
+        },
+        Subcommand::Scene(v) => match v {
+            subcommand::Scene::Set(v) => command::scene::set(v),
+            subcommand::Scene::Get(v) => command::scene::get(v),
+            subcommand::Scene::Create(v) => command::scene::create(v),
+            subcommand::Scene::Delete(v) => command::scene::delete(v),
+        },
     };
 }

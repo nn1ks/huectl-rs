@@ -1,5 +1,4 @@
-use crate::arg::subcommand;
-use crate::util;
+use crate::{arg::subcommand, util};
 use std::fmt;
 
 pub struct Modifier {
@@ -7,63 +6,61 @@ pub struct Modifier {
     pub attribute: huelib::light::AttributeModifier,
 }
 
-struct Light {
-    value: huelib::Light,
-}
+struct Light(huelib::Light);
 
 impl fmt::Display for Light {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         let mut output = String::new();
-        output.push_str(&format!("Light {}:\n", self.value.id));
-        output.push_str(&format!("    Name: {}\n", self.value.name));
-        output.push_str(&format!("    Kind: {}\n", self.value.kind));
-        if let Some(v) = self.value.state.brightness {
+        output.push_str(&format!("Light {}:\n", self.0.id));
+        output.push_str(&format!("    Name: {}\n", self.0.name));
+        output.push_str(&format!("    Kind: {}\n", self.0.kind));
+        if let Some(v) = self.0.state.brightness {
             output.push_str(&format!("    Brightness: {}\n", v));
         }
-        if let Some(v) = self.value.state.hue {
+        if let Some(v) = self.0.state.hue {
             output.push_str(&format!("    Hue: {}\n", v));
         }
-        if let Some(v) = self.value.state.saturation {
+        if let Some(v) = self.0.state.saturation {
             output.push_str(&format!("    Saturation: {}\n", v));
         }
-        if let Some(v) = self.value.state.color_space_coordinates {
+        if let Some(v) = self.0.state.color_space_coordinates {
             output.push_str(&format!(
                 "    ColorSpaceCoordinates: {}\n",
                 format!("{},{}", v.0, v.1)
             ));
         }
-        if let Some(v) = self.value.state.color_temperature {
+        if let Some(v) = self.0.state.color_temperature {
             output.push_str(&format!("    ColorTemperature: {}\n", v));
         }
-        if let Some(v) = self.value.state.alert {
+        if let Some(v) = self.0.state.alert {
             output.push_str(&format!("    Alert: {:?}\n", v));
         }
-        if let Some(v) = self.value.state.effect {
+        if let Some(v) = self.0.state.effect {
             output.push_str(&format!("    Effect: {:?}\n", v));
         }
-        if let Some(v) = self.value.state.color_mode {
+        if let Some(v) = self.0.state.color_mode {
             output.push_str(&format!("    ColorMode: {:?}\n", v));
         }
-        output.push_str(&format!("    Reachable: {}\n", self.value.state.reachable));
-        output.push_str(&format!("    ModelId: {}\n", self.value.model_id));
-        if let Some(v) = &self.value.product_id {
+        output.push_str(&format!("    Reachable: {}\n", self.0.state.reachable));
+        output.push_str(&format!("    ModelId: {}\n", self.0.model_id));
+        if let Some(v) = &self.0.product_id {
             output.push_str(&format!("    ProductId: {}\n", v));
         }
-        if let Some(v) = &self.value.product_name {
+        if let Some(v) = &self.0.product_name {
             output.push_str(&format!("    ProductName: {}\n", v));
         }
-        if let Some(v) = &self.value.manufacturer_name {
+        if let Some(v) = &self.0.manufacturer_name {
             output.push_str(&format!("    ManufacturerName: {}\n", v));
         }
         output.push_str(&format!(
             "    SoftwareVersion: {}\n",
-            self.value.software_version
+            self.0.software_version
         ));
         output.push_str(&format!(
             "    SoftwareUpdateState: {:?}\n",
-            self.value.software_update.state
+            self.0.software_update.state
         ));
-        if let Some(v) = &self.value.software_update.last_install {
+        if let Some(v) = &self.0.software_update.last_install {
             output.push_str(&format!("    SoftwareUpdateLastInstall: {}\n", v));
         }
         output.pop();
@@ -71,13 +68,7 @@ impl fmt::Display for Light {
     }
 }
 
-impl std::convert::From<huelib::Light> for Light {
-    fn from(value: huelib::Light) -> Self {
-        Self { value }
-    }
-}
-
-pub fn set(arg: subcommand::SetLight) {
+pub fn set(arg: subcommand::light::Set) {
     let bridge = util::get_bridge();
     let modifier = arg.to_modifier();
     let mut responses = Vec::new();
@@ -102,7 +93,7 @@ pub fn set(arg: subcommand::SetLight) {
     }
 }
 
-pub fn get(arg: subcommand::GetLight) {
+pub fn get(arg: subcommand::light::Get) {
     let bridge = util::get_bridge();
     match arg.id {
         Some(v) => match bridge.get_light(&v) {
@@ -113,7 +104,7 @@ pub fn get(arg: subcommand::GetLight) {
                         Err(e) => util::print_err("Failed to serialize data", e),
                     };
                 } else {
-                    println!("{}", Light::from(v));
+                    println!("{}", Light(v));
                 }
             }
             Err(e) => util::print_err("Failed to get light", e),
@@ -127,7 +118,7 @@ pub fn get(arg: subcommand::GetLight) {
                     };
                 } else {
                     for light in v {
-                        println!("{}\n", Light::from(light));
+                        println!("{}\n", Light(light));
                     }
                 }
             }
@@ -136,7 +127,7 @@ pub fn get(arg: subcommand::GetLight) {
     };
 }
 
-pub fn search(arg: subcommand::SearchLight) {
+pub fn search(arg: subcommand::light::Search) {
     let bridge = util::get_bridge();
     if arg.get {
         match bridge.get_new_lights() {
@@ -168,7 +159,7 @@ pub fn search(arg: subcommand::SearchLight) {
     }
 }
 
-pub fn delete(arg: subcommand::DeleteLight) {
+pub fn delete(arg: subcommand::light::Delete) {
     match util::get_bridge().delete_light(&arg.id) {
         Ok(_) => println!("Deleted light {}", arg.id),
         Err(e) => util::print_err("Failed to delete light", e),

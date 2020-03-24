@@ -1,5 +1,4 @@
-use crate::arg::subcommand;
-use crate::util;
+use crate::{arg::subcommand, util};
 use std::fmt;
 
 struct Config(huelib::Config);
@@ -12,7 +11,7 @@ impl fmt::Display for Config {
     }
 }
 
-pub fn set(arg: subcommand::SetConfig) {
+pub fn set(arg: subcommand::config::Set) {
     let responses = match util::get_bridge().set_config(&arg.to_modifier()) {
         Ok(v) => v,
         Err(e) => util::print_err("Failed to set config", e),
@@ -22,7 +21,7 @@ pub fn set(arg: subcommand::SetConfig) {
     }
 }
 
-pub fn get(arg: subcommand::GetConfig) {
+pub fn get(arg: subcommand::config::Get) {
     let bridge = util::get_bridge();
     match bridge.get_config() {
         Ok(v) => {
