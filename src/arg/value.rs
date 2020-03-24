@@ -5,7 +5,7 @@ fn parse_with_suffix<T: std::str::FromStr>(
     value_str: &str,
     error: arg::ParseError,
 ) -> Result<(ModifierType, T), arg::ParseError> {
-    let modifier_type = match value_str.chars().nth(0) {
+    let modifier_type = match value_str.chars().next() {
         Some(v) => match v {
             '+' => ModifierType::Increment,
             '-' => ModifierType::Decrement,
@@ -13,12 +13,12 @@ fn parse_with_suffix<T: std::str::FromStr>(
         },
         None => return Err(error),
     };
-    let value;
-    if modifier_type == ModifierType::Increment || modifier_type == ModifierType::Decrement {
-        value = value_str.split_at(1).1;
-    } else {
-        value = value_str;
-    }
+    let value =
+        if modifier_type == ModifierType::Increment || modifier_type == ModifierType::Decrement {
+            value_str.split_at(1).1
+        } else {
+            value_str
+        };
     Ok((modifier_type, value.parse().map_err(|_| error)?))
 }
 
@@ -100,7 +100,7 @@ impl std::str::FromStr for ColorSpaceCoordinates {
                     arg::ParseError::new("The value must be a floating point number with 32 bits.");
                 (
                     parse_with_suffix::<f32>(x, error.clone())?,
-                    parse_with_suffix::<f32>(y, error.clone())?,
+                    parse_with_suffix::<f32>(y, error)?,
                 )
             }
             _ => {
@@ -133,7 +133,7 @@ impl std::str::FromStr for ColorSpaceCoordinates {
             Err(arg::ParseError::from_float_value(&max_value))
         } else {
             Ok(Self {
-                modifier_type: modifier_type,
+                modifier_type,
                 value: (x.1, y.1),
             })
         }
