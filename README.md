@@ -17,6 +17,13 @@ cd huectl-rs
 cargo install --release
 ```
 
+## Configuration
+
+Environment variables are used for configuration.
+
+- `HUECTL_BRIDGE_IP`: The IP address of the bridge
+- `HUECTL_BRIDGE_USERNAME`: The name of a registered user on the bridge
+
 ## Usage
 
 ```
