@@ -12,7 +12,7 @@ categories = ["command-line-utilities"]
 keywords = ["philips", "hue", "light", "cli"]
 
 [dependencies]
-huelib = "0.1"
+huelib = "0.2"
 envconfig = "0.7"
 envconfig_derive = "0.7"
 structopt = "0.3"
