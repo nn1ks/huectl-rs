@@ -1,6 +1,6 @@
 use crate::{arg::subcommand, config, util};
 
-pub fn discover() {
+pub fn discover(_arg: subcommand::Discover) {
     let ip_addresses = match huelib::bridge::discover() {
         Ok(v) => v,
         Err(e) => util::print_err("Failed to discover bridges", e),

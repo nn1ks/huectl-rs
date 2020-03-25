@@ -12,7 +12,7 @@ use structopt::StructOpt;
 fn main() {
     let args = arg::Args::from_args();
     match args.subcommand {
-        Subcommand::Discover(_) => command::bridge::discover(),
+        Subcommand::Discover(v) => command::bridge::discover(v),
         Subcommand::Register(v) => command::bridge::register(v),
         Subcommand::Config(v) => match v {
             subcommand::Config::Set(v) => command::config::set(v),
