@@ -1,4 +1,5 @@
-use crate::{arg::value, command};
+use crate::arg::value;
+use huelib::Modifier;
 use structopt::StructOpt;
 
 /// Modifies the state and attributes of a light

@@ -1,4 +1,5 @@
 use crate::arg::value;
+use huelib::Modifier;
 use structopt::StructOpt;
 
 /// Modifies the state and attributes of a scene
@@ -28,7 +29,8 @@ impl Set {
             modifier = modifier.name(v);
         }
         if let Some(v) = &self.lights {
-            modifier = modifier.lights(v.to_vec());
+            let lights: Vec<&str> = v.iter().map(AsRef::as_ref).collect();
+            modifier = modifier.lights(&lights);
         }
         if self.store_light_state {
             modifier = modifier.store_light_state(true);
@@ -68,7 +70,8 @@ pub struct Create {
 
 impl Create {
     pub fn to_creator(&self) -> huelib::scene::Creator {
-        let mut creator = huelib::scene::Creator::new(&self.name, self.lights.clone());
+        let lights: Vec<&str> = self.lights.iter().map(|v| v.as_ref()).collect();
+        let mut creator = huelib::scene::Creator::new(&self.name, &lights);
         if let Some(v) = &self.kind {
             creator = creator.kind(v.value);
         }

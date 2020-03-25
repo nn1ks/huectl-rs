@@ -336,7 +336,7 @@ impl std::str::FromStr for GroupClass {
 
 #[derive(Debug)]
 pub struct SceneType {
-    pub value: huelib::scene::Type,
+    pub value: huelib::scene::Kind,
 }
 
 impl SceneType {
@@ -348,10 +348,10 @@ impl SceneType {
 impl std::str::FromStr for SceneType {
     type Err = arg::ParseError;
     fn from_str(s: &str) -> Result<Self, arg::ParseError> {
-        use huelib::scene::Type;
+        use huelib::scene::Kind;
         let value = match s.to_lowercase().as_ref() {
-            "lightscene" => Type::LightScene,
-            "groupscene" => Type::GroupScene,
+            "lightscene" => Kind::LightScene,
+            "groupscene" => Kind::GroupScene,
             _ => return Err(arg::ParseError::new("Invalid value for kind")),
         };
         Ok(Self { value })

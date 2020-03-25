@@ -1,4 +1,5 @@
 use crate::{arg::subcommand, util};
+use huelib::Modifier;
 use std::fmt;
 
 struct Light(huelib::Light);
