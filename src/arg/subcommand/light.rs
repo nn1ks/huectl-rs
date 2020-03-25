@@ -89,7 +89,7 @@ impl Set {
 /// Prints the state and attributes of a light
 #[derive(Debug, StructOpt)]
 pub struct Get {
-    /// Identifier of the light, if ommited all lights are selected
+    /// Identifier of the light, if omitted all lights are selected
     pub id: Option<String>,
 }
 

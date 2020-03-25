@@ -102,7 +102,7 @@ impl Set {
 /// Prints the state and attributes of a group
 #[derive(Debug, StructOpt)]
 pub struct Get {
-    /// Identifier of the group, if ommited all groups are selected
+    /// Identifier of the group, if omitted all groups are selected
     pub id: Option<String>,
 }
 

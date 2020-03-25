@@ -25,7 +25,7 @@ pub struct Discover {}
 /// Registers a new user on a bridge
 #[derive(Debug, StructOpt)]
 pub struct Register {
-    /// IP address of the bridge, if ommited the user will be registered on the first discovered
+    /// IP address of the bridge, if omitted the user will be registered on the first discovered
     /// bridge
     pub ip_address: Option<IpAddr>,
     /// Sets environment variables for the current session

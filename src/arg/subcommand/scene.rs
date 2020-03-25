@@ -45,7 +45,7 @@ impl Set {
 /// Prints the state and attributes of a scene
 #[derive(Debug, StructOpt)]
 pub struct Get {
-    /// Identifier of the scene, if ommited all scenes are selected
+    /// Identifier of the scene, if omitted all scenes are selected
     pub id: Option<String>,
 }
 
