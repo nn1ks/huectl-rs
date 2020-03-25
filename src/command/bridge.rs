@@ -11,13 +11,28 @@ pub fn discover(_arg: subcommand::Discover) {
 }
 
 pub fn register(arg: subcommand::Register) {
-    let user = match huelib::bridge::register_user(arg.ip_address, "huectl-rs", false) {
-        Ok(v) => v,
-        Err(e) => exit!("Failed to register user", e),
+    let ip_address = match arg.ip_address {
+        Some(v) => v,
+        None => match huelib::bridge::discover() {
+            Ok(mut v) => match v.pop() {
+                Some(v) => v,
+                None => exit!("No bridges were found"),
+            },
+            Err(e) => exit!("Failed to discover bridges", e),
+        },
     };
-    let ip_address = arg.ip_address.to_string();
+    let user = match huelib::bridge::register_user(ip_address, "huectl-rs", false) {
+        Ok(v) => v,
+        Err(e) => exit!(
+            format!(
+                "Failed to register user on bridge with the IP address '{}'",
+                ip_address
+            ),
+            e
+        ),
+    };
     if arg.set_env {
-        std::env::set_var(config::VAR_BRIDGE_IP, ip_address);
+        std::env::set_var(config::VAR_BRIDGE_IP, ip_address.to_string());
         std::env::set_var(config::VAR_BRIDGE_USERNAME, user.name);
     } else {
         println!("{}={}", config::VAR_BRIDGE_IP, ip_address);
