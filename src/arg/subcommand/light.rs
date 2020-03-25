@@ -42,7 +42,7 @@ pub struct Set {
 }
 
 impl Set {
-    pub fn to_modifier(&self) -> command::light::Modifier {
+    pub fn to_state_modifier(&self) -> huelib::light::StateModifier {
         let mut state_modifier = huelib::light::StateModifier::new();
         if self.on {
             state_modifier = state_modifier.on(true);
@@ -73,14 +73,15 @@ impl Set {
         if let Some(v) = self.transition_time {
             state_modifier = state_modifier.transition_time(v);
         }
+        state_modifier
+    }
+
+    pub fn to_attribute_modifier(&self) -> huelib::light::AttributeModifier {
         let mut attribute_modifier = huelib::light::AttributeModifier::new();
         if let Some(v) = &self.name {
             attribute_modifier = attribute_modifier.name(&v);
         }
-        command::light::Modifier {
-            state: state_modifier,
-            attribute: attribute_modifier,
-        }
+        attribute_modifier
     }
 }
 

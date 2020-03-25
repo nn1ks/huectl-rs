@@ -48,7 +48,7 @@ pub struct Set {
 }
 
 impl Set {
-    pub fn to_modifier(&self) -> command::group::Modifier {
+    pub fn to_state_modifier(&self) -> huelib::group::StateModifier {
         let mut state_modifier = huelib::group::StateModifier::new();
         if self.on {
             state_modifier = state_modifier.on(true);
@@ -79,6 +79,10 @@ impl Set {
         if let Some(v) = self.transition_time {
             state_modifier = state_modifier.transition_time(v);
         }
+        state_modifier
+    }
+
+    pub fn to_attribute_modifier(&self) -> huelib::group::AttributeModifier {
         let mut attribute_modifier = huelib::group::AttributeModifier::new();
         if let Some(v) = &self.name {
             attribute_modifier = attribute_modifier.name(&v);
@@ -90,10 +94,7 @@ impl Set {
         if let Some(v) = &self.class {
             attribute_modifier = attribute_modifier.class(v.value);
         }
-        command::group::Modifier {
-            state: state_modifier,
-            attribute: attribute_modifier,
-        }
+        attribute_modifier
     }
 }
 

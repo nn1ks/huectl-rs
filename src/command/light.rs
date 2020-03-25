@@ -1,11 +1,6 @@
 use crate::{arg::subcommand, util};
 use std::fmt;
 
-pub struct Modifier {
-    pub state: huelib::light::StateModifier,
-    pub attribute: huelib::light::AttributeModifier,
-}
-
 struct Light(huelib::Light);
 
 impl fmt::Display for Light {
@@ -70,17 +65,18 @@ impl fmt::Display for Light {
 
 pub fn set(arg: subcommand::light::Set) {
     let bridge = util::get_bridge();
-    let modifier = arg.to_modifier();
     let mut responses = Vec::new();
-    if !modifier.state.is_empty() {
-        responses.extend(match bridge.set_light_state(&arg.id, &modifier.state) {
+    let state_modifier = arg.to_state_modifier();
+    if !state_modifier.is_empty() {
+        responses.extend(match bridge.set_light_state(&arg.id, &state_modifier) {
             Ok(v) => v,
             Err(e) => util::print_err("Error occured while modifying the state of the light", e),
         });
     }
-    if !modifier.attribute.is_empty() {
+    let attribute_modifier = arg.to_attribute_modifier();
+    if !attribute_modifier.is_empty() {
         responses.extend(
-            match bridge.set_light_attribute(&arg.id, &modifier.attribute) {
+            match bridge.set_light_attribute(&arg.id, &attribute_modifier) {
                 Ok(v) => v,
                 Err(e) => {
                     util::print_err("Error occured while modifying attributes of the light", e)
