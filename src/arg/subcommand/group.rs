@@ -102,9 +102,6 @@ impl Set {
 pub struct Get {
     /// Identifier of the group, if ommited all groups are selected
     pub id: Option<String>,
-    /// Prints the output in JSON format
-    #[structopt(long, short)]
-    pub json: bool,
 }
 
 /// Creates a group

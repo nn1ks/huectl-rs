@@ -45,9 +45,6 @@ impl Set {
 pub struct Get {
     /// Identifier of the scene, if ommited all scenes are selected
     pub id: Option<String>,
-    /// Prints the output in JSON format
-    #[structopt(long, short)]
-    pub json: bool,
 }
 
 /// Creates a scene

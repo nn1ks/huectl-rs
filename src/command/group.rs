@@ -62,29 +62,13 @@ pub fn get(arg: subcommand::group::Get) {
     let bridge = util::get_bridge();
     match arg.id {
         Some(v) => match bridge.get_group(&v) {
-            Ok(v) => {
-                if arg.json {
-                    match serde_json::to_string_pretty(&v) {
-                        Ok(v) => println!("{}", v),
-                        Err(e) => util::print_err("Failed to serialize data", e),
-                    };
-                } else {
-                    println!("{}", Group(v))
-                }
-            }
+            Ok(v) => println!("{}", Group(v)),
             Err(e) => util::print_err("Failed to get group", e),
         },
         None => match bridge.get_all_groups() {
             Ok(v) => {
-                if arg.json {
-                    match serde_json::to_string_pretty(&v) {
-                        Ok(v) => println!("{}", v),
-                        Err(e) => util::print_err("Failed to serialize data", e),
-                    };
-                } else {
-                    for group in v {
-                        println!("{}\n", Group(group));
-                    }
+                for group in v {
+                    println!("{}\n", Group(group));
                 }
             }
             Err(e) => util::print_err("Failed to get groups", e),

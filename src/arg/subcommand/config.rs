@@ -1,3 +1,4 @@
+use huelib::Modifier;
 use std::net::IpAddr;
 use structopt::StructOpt;
 
@@ -93,8 +94,4 @@ impl Set {
 
 /// Prints the bridge configuration
 #[derive(Debug, StructOpt)]
-pub struct Get {
-    /// Prints the output in JSON format
-    #[structopt(long, short)]
-    pub json: bool,
-}
+pub struct Get {}

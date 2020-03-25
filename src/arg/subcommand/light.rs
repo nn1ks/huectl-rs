@@ -89,9 +89,6 @@ impl Set {
 pub struct Get {
     /// Identifier of the light, if ommited all lights are selected
     pub id: Option<String>,
-    /// Prints the output in JSON format
-    #[structopt(long, short)]
-    pub json: bool,
 }
 
 /// Searches for new lights

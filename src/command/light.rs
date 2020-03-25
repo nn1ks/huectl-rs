@@ -97,29 +97,13 @@ pub fn get(arg: subcommand::light::Get) {
     let bridge = util::get_bridge();
     match arg.id {
         Some(v) => match bridge.get_light(&v) {
-            Ok(v) => {
-                if arg.json {
-                    match serde_json::to_string_pretty(&v) {
-                        Ok(v) => println!("{}", v),
-                        Err(e) => util::print_err("Failed to serialize data", e),
-                    };
-                } else {
-                    println!("{}", Light(v));
-                }
-            }
+            Ok(v) => println!("{}", Light(v)),
             Err(e) => util::print_err("Failed to get light", e),
         },
         None => match bridge.get_all_lights() {
             Ok(v) => {
-                if arg.json {
-                    match serde_json::to_string_pretty(&v) {
-                        Ok(v) => println!("{}", v),
-                        Err(e) => util::print_err("Failed to serialize data", e),
-                    };
-                } else {
-                    for light in v {
-                        println!("{}\n", Light(light));
-                    }
+                for light in v {
+                    println!("{}\n", Light(light));
                 }
             }
             Err(e) => util::print_err("Failed to get lights", e),

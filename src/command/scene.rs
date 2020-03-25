@@ -54,29 +54,13 @@ pub fn get(arg: subcommand::scene::Get) {
     let bridge = util::get_bridge();
     match arg.id {
         Some(v) => match bridge.get_scene(&v) {
-            Ok(v) => {
-                if arg.json {
-                    match serde_json::to_string_pretty(&v) {
-                        Ok(v) => println!("{}", v),
-                        Err(e) => util::print_err("Failed to serialize data", e),
-                    };
-                } else {
-                    println!("{}", Scene(v))
-                }
-            }
+            Ok(v) => println!("{}", Scene(v)),
             Err(e) => util::print_err("Failed to get scene", e),
         },
         None => match bridge.get_all_scenes() {
             Ok(v) => {
-                if arg.json {
-                    match serde_json::to_string_pretty(&v) {
-                        Ok(v) => println!("{}", v),
-                        Err(e) => util::print_err("Failed to serialize data", e),
-                    };
-                } else {
-                    for scene in v {
-                        println!("{}\n", Scene(scene));
-                    }
+                for scene in v {
+                    println!("{}\n", Scene(scene));
                 }
             }
             Err(e) => util::print_err("Failed to get scenes", e),
