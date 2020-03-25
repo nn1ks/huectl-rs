@@ -71,7 +71,7 @@ pub fn set(arg: subcommand::light::Set) {
     if !state_modifier.is_empty() {
         responses.extend(match bridge.set_light_state(&arg.id, &state_modifier) {
             Ok(v) => v,
-            Err(e) => util::print_err("Error occured while modifying the state of the light", e),
+            Err(e) => exit!("Error occured while modifying the state of the light", e),
         });
     }
     let attribute_modifier = arg.to_attribute_modifier();
@@ -79,9 +79,7 @@ pub fn set(arg: subcommand::light::Set) {
         responses.extend(
             match bridge.set_light_attribute(&arg.id, &attribute_modifier) {
                 Ok(v) => v,
-                Err(e) => {
-                    util::print_err("Error occured while modifying attributes of the light", e)
-                }
+                Err(e) => exit!("Error occured while modifying attributes of the light", e),
             },
         );
     }
@@ -95,7 +93,7 @@ pub fn get(arg: subcommand::light::Get) {
     match arg.id {
         Some(v) => match bridge.get_light(&v) {
             Ok(v) => println!("{}", Light(v)),
-            Err(e) => util::print_err("Failed to get light", e),
+            Err(e) => exit!("Failed to get light", e),
         },
         None => match bridge.get_all_lights() {
             Ok(v) => {
@@ -103,7 +101,7 @@ pub fn get(arg: subcommand::light::Get) {
                     println!("{}\n", Light(light));
                 }
             }
-            Err(e) => util::print_err("Failed to get lights", e),
+            Err(e) => exit!("Failed to get lights", e),
         },
     };
 }
@@ -130,12 +128,12 @@ pub fn search(arg: subcommand::light::Search) {
                     }
                 }
             }
-            Err(e) => util::print_err("Failed to get new lights", e),
+            Err(e) => exit!("Failed to get new lights", e),
         };
     } else {
         match bridge.search_new_lights(None) {
             Ok(_) => println!("Searching for new lights"),
-            Err(e) => util::print_err("Failed to search for new lights", e),
+            Err(e) => exit!("Failed to search for new lights", e),
         };
     }
 }
@@ -143,6 +141,6 @@ pub fn search(arg: subcommand::light::Search) {
 pub fn delete(arg: subcommand::light::Delete) {
     match util::get_bridge().delete_light(&arg.id) {
         Ok(_) => println!("Deleted light {}", arg.id),
-        Err(e) => util::print_err("Failed to delete light", e),
+        Err(e) => exit!("Failed to delete light", e),
     };
 }

@@ -36,7 +36,7 @@ pub fn set(arg: subcommand::group::Set) {
     if !state_modifier.is_empty() {
         responses.extend(match bridge.set_group_state(&arg.id, &state_modifier) {
             Ok(v) => v,
-            Err(e) => util::print_err("Error occured while modifying the state of the lights", e),
+            Err(e) => exit!("Error occured while modifying the state of the lights", e),
         });
     }
     let attribute_modifier = arg.to_attribute_modifier();
@@ -44,9 +44,7 @@ pub fn set(arg: subcommand::group::Set) {
         responses.extend(
             match bridge.set_group_attribute(&arg.id, &attribute_modifier) {
                 Ok(v) => v,
-                Err(e) => {
-                    util::print_err("Error occured while modifying attributes of the lights", e)
-                }
+                Err(e) => exit!("Error occured while modifying attributes of the lights", e),
             },
         );
     }
@@ -60,7 +58,7 @@ pub fn get(arg: subcommand::group::Get) {
     match arg.id {
         Some(v) => match bridge.get_group(&v) {
             Ok(v) => println!("{}", Group(v)),
-            Err(e) => util::print_err("Failed to get group", e),
+            Err(e) => exit!("Failed to get group", e),
         },
         None => match bridge.get_all_groups() {
             Ok(v) => {
@@ -68,7 +66,7 @@ pub fn get(arg: subcommand::group::Get) {
                     println!("{}\n", Group(group));
                 }
             }
-            Err(e) => util::print_err("Failed to get groups", e),
+            Err(e) => exit!("Failed to get groups", e),
         },
     };
 }
@@ -76,13 +74,13 @@ pub fn get(arg: subcommand::group::Get) {
 pub fn create(arg: subcommand::group::Create) {
     match util::get_bridge().create_group(&arg.to_creator()) {
         Ok(v) => println!("Created group {}", v),
-        Err(e) => util::print_err("Failed to create group", e),
+        Err(e) => exit!("Failed to create group", e),
     }
 }
 
 pub fn delete(arg: subcommand::group::Delete) {
     match util::get_bridge().delete_group(&arg.id) {
         Ok(_) => println!("Deleted group {}", arg.id),
-        Err(e) => util::print_err("Failed to delete group", e),
+        Err(e) => exit!("Failed to delete group", e),
     };
 }

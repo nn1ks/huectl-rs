@@ -6,6 +6,6 @@ pub fn get(_arg: subcommand::capabilities::Get) {
             // TODO: Create struct for printing
             println!("{:#?}", v);
         }
-        Err(e) => util::print_err("Failed to get capabilities", e),
+        Err(e) => exit!("Failed to get capabilities", e),
     };
 }

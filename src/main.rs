@@ -1,10 +1,12 @@
 #[macro_use]
 extern crate envconfig_derive;
 
+#[macro_use]
+mod util;
+
 mod arg;
 mod command;
 mod config;
-mod util;
 
 use arg::subcommand::{self, Subcommand};
 use structopt::StructOpt;

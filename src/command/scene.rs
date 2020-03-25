@@ -43,7 +43,7 @@ impl fmt::Display for Scene {
 pub fn set(arg: subcommand::scene::Set) {
     let responses = match util::get_bridge().set_scene(&arg.id, &arg.to_modifier()) {
         Ok(v) => v,
-        Err(e) => util::print_err("Failed to set scene", e),
+        Err(e) => exit!("Failed to set scene", e),
     };
     for i in responses {
         println!("{}", i);
@@ -55,7 +55,7 @@ pub fn get(arg: subcommand::scene::Get) {
     match arg.id {
         Some(v) => match bridge.get_scene(&v) {
             Ok(v) => println!("{}", Scene(v)),
-            Err(e) => util::print_err("Failed to get scene", e),
+            Err(e) => exit!("Failed to get scene", e),
         },
         None => match bridge.get_all_scenes() {
             Ok(v) => {
@@ -63,7 +63,7 @@ pub fn get(arg: subcommand::scene::Get) {
                     println!("{}\n", Scene(scene));
                 }
             }
-            Err(e) => util::print_err("Failed to get scenes", e),
+            Err(e) => exit!("Failed to get scenes", e),
         },
     };
 }
@@ -71,13 +71,13 @@ pub fn get(arg: subcommand::scene::Get) {
 pub fn create(arg: subcommand::scene::Create) {
     match util::get_bridge().create_scene(&arg.to_creator()) {
         Ok(v) => println!("Created scene {}", v),
-        Err(e) => util::print_err("Failed to create scene", e),
+        Err(e) => exit!("Failed to create scene", e),
     };
 }
 
 pub fn delete(arg: subcommand::scene::Delete) {
     match util::get_bridge().delete_scene(&arg.id) {
         Ok(_) => println!("Deleted scene {}", arg.id),
-        Err(e) => util::print_err("Failed to delete scene", e),
+        Err(e) => exit!("Failed to delete scene", e),
     };
 }

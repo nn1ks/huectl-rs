@@ -1,9 +1,9 @@
-use crate::{arg::subcommand, config, util};
+use crate::{arg::subcommand, config};
 
 pub fn discover(_arg: subcommand::Discover) {
     let ip_addresses = match huelib::bridge::discover() {
         Ok(v) => v,
-        Err(e) => util::print_err("Failed to discover bridges", e),
+        Err(e) => exit!("Failed to discover bridges", e),
     };
     for i in ip_addresses {
         println!("{}", i);
@@ -13,7 +13,7 @@ pub fn discover(_arg: subcommand::Discover) {
 pub fn register(arg: subcommand::Register) {
     let user = match huelib::bridge::register_user(arg.ip_address, "huectl-rs", false) {
         Ok(v) => v,
-        Err(e) => util::print_err("Failed to register user", e),
+        Err(e) => exit!("Failed to register user", e),
     };
     let ip_address = arg.ip_address.to_string();
     if arg.set_env {
