@@ -80,7 +80,7 @@ impl Set {
     pub fn to_attribute_modifier(&self) -> huelib::light::AttributeModifier {
         let mut attribute_modifier = huelib::light::AttributeModifier::new();
         if let Some(v) = &self.name {
-            attribute_modifier = attribute_modifier.name(&v);
+            attribute_modifier = attribute_modifier.name(v);
         }
         attribute_modifier
     }

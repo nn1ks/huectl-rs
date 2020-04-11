@@ -29,13 +29,11 @@ impl Set {
             modifier = modifier.name(v);
         }
         if let Some(v) = &self.lights {
-            let lights: Vec<&str> = v.iter().map(AsRef::as_ref).collect();
-            modifier = modifier.lights(&lights);
+            modifier = modifier.lights(v.clone());
         }
         if self.store_light_state {
             modifier = modifier.store_light_state(true);
-        }
-        if self.no_store_light_state {
+        } else if self.no_store_light_state {
             modifier = modifier.store_light_state(false);
         }
         modifier
@@ -70,8 +68,7 @@ pub struct Create {
 
 impl Create {
     pub fn to_creator(&self) -> huelib::scene::Creator {
-        let lights: Vec<&str> = self.lights.iter().map(|v| v.as_ref()).collect();
-        let mut creator = huelib::scene::Creator::new(&self.name, &lights);
+        let mut creator = huelib::scene::Creator::new(&self.name, self.lights.clone());
         if let Some(v) = &self.kind {
             creator = creator.kind(v.value);
         }

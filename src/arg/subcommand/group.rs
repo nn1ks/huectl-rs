@@ -50,52 +50,51 @@ pub struct Set {
 
 impl Set {
     pub fn to_state_modifier(&self) -> huelib::group::StateModifier {
-        let mut state_modifier = huelib::group::StateModifier::new();
+        let mut modifier = huelib::group::StateModifier::new();
         if self.on {
-            state_modifier = state_modifier.on(true);
+            modifier = modifier.on(true);
         } else if self.off {
-            state_modifier = state_modifier.on(false);
+            modifier = modifier.on(false);
         }
         if let Some(v) = &self.brightness {
-            state_modifier = state_modifier.brightness(v.modifier_type, v.value);
+            modifier = modifier.brightness(v.modifier_type, v.value);
         }
         if let Some(v) = &self.hue {
-            state_modifier = state_modifier.hue(v.modifier_type, v.value);
+            modifier = modifier.hue(v.modifier_type, v.value);
         }
         if let Some(v) = &self.saturation {
-            state_modifier = state_modifier.saturation(v.modifier_type, v.value);
+            modifier = modifier.saturation(v.modifier_type, v.value);
         }
         if let Some(v) = &self.color_space_coordinates {
-            state_modifier = state_modifier.color_space_coordinates(v.modifier_type, v.value);
+            modifier = modifier.color_space_coordinates(v.modifier_type, v.value);
         }
         if let Some(v) = &self.color_temperature {
-            state_modifier = state_modifier.color_temperature(v.modifier_type, v.value);
+            modifier = modifier.color_temperature(v.modifier_type, v.value);
         }
         if let Some(v) = &self.alert {
-            state_modifier = state_modifier.alert(v.value);
+            modifier = modifier.alert(v.value);
         }
         if let Some(v) = &self.effect {
-            state_modifier = state_modifier.effect(v.value);
+            modifier = modifier.effect(v.value);
         }
         if let Some(v) = self.transition_time {
-            state_modifier = state_modifier.transition_time(v);
+            modifier = modifier.transition_time(v);
         }
-        state_modifier
+        modifier
     }
 
     pub fn to_attribute_modifier(&self) -> huelib::group::AttributeModifier {
-        let mut attribute_modifier = huelib::group::AttributeModifier::new();
+        let mut modifier = huelib::group::AttributeModifier::new();
         if let Some(v) = &self.name {
-            attribute_modifier = attribute_modifier.name(&v);
+            modifier = modifier.name(v);
         }
         if let Some(v) = &self.lights {
-            attribute_modifier =
-                attribute_modifier.lights(&v.iter().map(AsRef::as_ref).collect::<Vec<&str>>());
+            modifier = modifier.lights(v.clone());
         }
         if let Some(v) = &self.class {
-            attribute_modifier = attribute_modifier.class(v.value);
+            modifier = modifier.class(v.value);
         }
-        attribute_modifier
+        modifier
     }
 }
 
