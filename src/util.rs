@@ -12,9 +12,9 @@ macro_rules! exit {
     }};
 }
 
-pub fn get_bridge() -> huelib::bridge::Bridge {
+pub fn get_bridge() -> huelib::Bridge {
     match config::get() {
-        Ok(v) => huelib::bridge::Bridge::new(v.bridge_ip, &v.bridge_username),
+        Ok(v) => huelib::Bridge::new(v.bridge_ip, &v.bridge_username),
         Err(e) => exit!("Failed to get configuration environment variables", e),
     }
 }
