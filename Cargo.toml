@@ -13,6 +13,6 @@ keywords = ["philips", "hue", "light", "cli"]
 
 [dependencies]
 huelib = "0.4"
-envconfig = "0.7"
-envconfig_derive = "0.7"
+envconfig = "0.8"
+envconfig_derive = "0.8"
 structopt = "0.3"
