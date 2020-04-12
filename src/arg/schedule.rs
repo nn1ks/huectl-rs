@@ -1,7 +1,19 @@
-use crate::arg::value;
+use crate::{arg::value, util};
+use std::fmt;
 use structopt::StructOpt;
 
-/// Modifies attributes of a schedule
+#[derive(Debug, StructOpt)]
+pub enum Arg {
+    /// Modifies attributes of a schedule
+    Set(Set),
+    /// Prints attributes of a schedule
+    Get(Get),
+    /// Creates a schedule
+    Create(Create),
+    /// Deletes a schedule
+    Delete(Delete),
+}
+
 #[derive(Debug, StructOpt)]
 pub struct Set {
     /// Identifier of the schedule
@@ -55,14 +67,40 @@ impl Set {
     }
 }
 
-/// Prints attributes of a schedule
+pub fn set(arg: Set) {
+    let responses = match util::get_bridge().set_schedule(&arg.id, &arg.to_modifier()) {
+        Ok(v) => v,
+        Err(e) => exit!("Failed to set schedule", e),
+    };
+    for i in responses {
+        println!("{}", i);
+    }
+}
+
 #[derive(Debug, StructOpt)]
 pub struct Get {
     /// Identifier of the schedule, if omitted all schedules are selected
     pub id: Option<String>,
 }
 
-/// Creates a schedule
+pub fn get(arg: Get) {
+    let bridge = util::get_bridge();
+    match arg.id {
+        Some(v) => match bridge.get_schedule(&v) {
+            Ok(v) => println!("{}", ScheduleDisplay(v)),
+            Err(e) => exit!("Failed to get schedule", e),
+        },
+        None => match bridge.get_all_schedules() {
+            Ok(v) => {
+                for schedule in v {
+                    println!("{}\n", ScheduleDisplay(schedule));
+                }
+            }
+            Err(e) => exit!("Failed to get schedules", e),
+        },
+    };
+}
+
 #[derive(Debug, StructOpt)]
 pub struct Create {
     /// The name of the schedule
@@ -135,9 +173,49 @@ impl Create {
     }
 }
 
-/// Deletes a schedule
+pub fn create(arg: Create) {
+    match util::get_bridge().create_schedule(&arg.to_creator()) {
+        Ok(v) => println!("Created schedule {}", v),
+        Err(e) => exit!("Failed to create schedule", e),
+    };
+}
+
 #[derive(Debug, StructOpt)]
 pub struct Delete {
     /// Identifier of the schedule
     pub id: String,
+}
+
+pub fn delete(arg: Delete) {
+    match util::get_bridge().delete_schedule(&arg.id) {
+        Ok(_) => println!("Deleted schedule {}", arg.id),
+        Err(e) => exit!("Failed to delete schedule", e),
+    };
+}
+
+struct ScheduleDisplay(huelib::Schedule);
+
+impl fmt::Display for ScheduleDisplay {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        let mut output = String::new();
+        output.push_str(&format!("Schedule {}:\n", self.0.id));
+        output.push_str(&format!("    Name: {}\n", self.0.name));
+        output.push_str(&format!("    Description: {}\n", self.0.description));
+        output.push_str(&format!("    CommandAddress: {}\n", self.0.command.address));
+        output.push_str(&format!(
+            "    CommandRequestType: {:?}\n",
+            self.0.command.request_type
+        ));
+        output.push_str(&format!("    CommandBody: {:?}\n", self.0.command.body));
+        output.push_str(&format!("    LocalTime: {}\n", self.0.local_time));
+        if let Some(v) = self.0.start_time {
+            output.push_str(&format!("    StartTime: {}\n", v));
+        }
+        output.push_str(&format!("    Status: {:?}\n", self.0.status));
+        if let Some(v) = self.0.auto_delete {
+            output.push_str(&format!("    AutoDelete: {}\n", v));
+        }
+        output.pop();
+        write!(f, "{}", output)
+    }
 }

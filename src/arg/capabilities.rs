@@ -1,9 +1,23 @@
-use crate::{arg::subcommand, util};
+use crate::util;
 use std::fmt;
+use structopt::StructOpt;
 
-struct Capabilities(huelib::Capabilities);
+#[derive(Debug, StructOpt)]
+pub enum Arg {
+    /// Prints capabilities of resources
+    Get,
+}
 
-impl fmt::Display for Capabilities {
+pub fn get() {
+    match util::get_bridge().get_capabilities() {
+        Ok(v) => println!("{}", CapabilitiesDisplay(v)),
+        Err(e) => exit!("Failed to get capabilities", e),
+    };
+}
+
+struct CapabilitiesDisplay(huelib::Capabilities);
+
+impl fmt::Display for CapabilitiesDisplay {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         let mut output = String::new();
         output.push_str("Lights:\n");
@@ -79,11 +93,4 @@ impl fmt::Display for Capabilities {
         output.pop();
         write!(f, "{}", output)
     }
-}
-
-pub fn get(_arg: subcommand::capabilities::Get) {
-    match util::get_bridge().get_capabilities() {
-        Ok(v) => println!("{}", Capabilities(v)),
-        Err(e) => exit!("Failed to get capabilities", e),
-    };
 }

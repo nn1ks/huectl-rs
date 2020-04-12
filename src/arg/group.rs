@@ -1,8 +1,20 @@
-use crate::arg::value;
+use crate::{arg::value, util};
 use huelib::Modifier;
+use std::fmt;
 use structopt::StructOpt;
 
-/// Modifies the state and attributes of a group
+#[derive(Debug, StructOpt)]
+pub enum Arg {
+    /// Modifies the state and attributes of a group
+    Set(Set),
+    /// Prints the state and attributes of a group
+    Get(Get),
+    /// Creates a group
+    Create(Create),
+    /// Deletes a group
+    Delete(Delete),
+}
+
 #[derive(Debug, StructOpt)]
 pub struct Set {
     /// Identifier of the group
@@ -98,14 +110,54 @@ impl Set {
     }
 }
 
-/// Prints the state and attributes of a group
+pub fn set(arg: Set) {
+    let bridge = util::get_bridge();
+    let mut responses = Vec::new();
+    let state_modifier = arg.to_state_modifier();
+    if !state_modifier.is_empty() {
+        responses.extend(match bridge.set_group_state(&arg.id, &state_modifier) {
+            Ok(v) => v,
+            Err(e) => exit!("Error occured while modifying the state of the lights", e),
+        });
+    }
+    let attribute_modifier = arg.to_attribute_modifier();
+    if !attribute_modifier.is_empty() {
+        responses.extend(
+            match bridge.set_group_attribute(&arg.id, &attribute_modifier) {
+                Ok(v) => v,
+                Err(e) => exit!("Error occured while modifying attributes of the lights", e),
+            },
+        );
+    }
+    for i in responses {
+        println!("{}", i);
+    }
+}
+
 #[derive(Debug, StructOpt)]
 pub struct Get {
     /// Identifier of the group, if omitted all groups are selected
     pub id: Option<String>,
 }
 
-/// Creates a group
+pub fn get(arg: Get) {
+    let bridge = util::get_bridge();
+    match arg.id {
+        Some(v) => match bridge.get_group(&v) {
+            Ok(v) => println!("{}", GroupDisplay(v)),
+            Err(e) => exit!("Failed to get group", e),
+        },
+        None => match bridge.get_all_groups() {
+            Ok(v) => {
+                for group in v {
+                    println!("{}\n", GroupDisplay(group));
+                }
+            }
+            Err(e) => exit!("Failed to get groups", e),
+        },
+    };
+}
+
 #[derive(Debug, StructOpt)]
 pub struct Create {
     /// The name of the new group
@@ -138,9 +190,49 @@ impl Create {
     }
 }
 
-/// Deletes a group
+pub fn create(arg: Create) {
+    match util::get_bridge().create_group(&arg.to_creator()) {
+        Ok(v) => println!("Created group {}", v),
+        Err(e) => exit!("Failed to create group", e),
+    }
+}
+
 #[derive(Debug, StructOpt)]
 pub struct Delete {
     /// Identifier of the group
     pub id: String,
+}
+
+pub fn delete(arg: Delete) {
+    match util::get_bridge().delete_group(&arg.id) {
+        Ok(_) => println!("Deleted group {}", arg.id),
+        Err(e) => exit!("Failed to delete group", e),
+    };
+}
+
+struct GroupDisplay(huelib::Group);
+
+impl fmt::Display for GroupDisplay {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        let mut output = String::new();
+        output.push_str(&format!("Group {}:\n", self.0.id));
+        output.push_str(&format!("    Name: {:?}\n", self.0.name));
+        output.push_str(&format!("    Lights: {:?}\n", self.0.lights));
+        output.push_str(&format!("    Kind: {:?}\n", self.0.kind));
+        if let Some(v) = self.0.class {
+            output.push_str(&format!("    Class: {:?}\n", v));
+        }
+        if let Some(v) = self.0.state {
+            output.push_str(&format!("    AnyOn: {}\n", v.any_on));
+            output.push_str(&format!("    AllOn: {}\n", v.all_on));
+        }
+        if let Some(v) = &self.0.model_id {
+            output.push_str(&format!("    ModelId: {:?}\n", v));
+        }
+        if let Some(v) = &self.0.unique_id {
+            output.push_str(&format!("    UniqueId: {:?}\n", v));
+        }
+        output.pop();
+        write!(f, "{}", output)
+    }
 }
