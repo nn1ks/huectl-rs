@@ -3,6 +3,7 @@ pub mod config;
 pub mod group;
 pub mod light;
 pub mod scene;
+pub mod schedule;
 
 use std::net::IpAddr;
 use structopt::StructOpt;
@@ -16,6 +17,7 @@ pub enum Subcommand {
     Group(Group),
     Scene(Scene),
     Capabilities(Capabilities),
+    Schedule(Schedule),
 }
 
 /// Discovers bridges in the local network
@@ -71,4 +73,13 @@ pub enum Scene {
 #[derive(Debug, StructOpt)]
 pub enum Capabilities {
     Get(capabilities::Get),
+}
+
+/// Modifies, prints, creates or deletes schedules
+#[derive(Debug, StructOpt)]
+pub enum Schedule {
+    Set(schedule::Set),
+    Get(schedule::Get),
+    Create(schedule::Create),
+    Delete(schedule::Delete),
 }

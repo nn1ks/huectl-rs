@@ -357,3 +357,28 @@ impl std::str::FromStr for SceneType {
         Ok(Self { value })
     }
 }
+
+#[derive(Debug)]
+pub struct ScheduleRequestType {
+    pub value: huelib::schedule::CommandRequestType,
+}
+
+impl ScheduleRequestType {
+    pub fn variants() -> &'static [&'static str] {
+        &["put", "post", "delete"]
+    }
+}
+
+impl std::str::FromStr for ScheduleRequestType {
+    type Err = arg::ParseError;
+    fn from_str(s: &str) -> Result<Self, arg::ParseError> {
+        use huelib::schedule::CommandRequestType;
+        let value = match s.to_lowercase().as_ref() {
+            "put" => CommandRequestType::Put,
+            "post" => CommandRequestType::Post,
+            "delete" => CommandRequestType::Delete,
+            _ => return Err(arg::ParseError::new("Invalid value for request type")),
+        };
+        Ok(Self { value })
+    }
+}

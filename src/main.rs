@@ -41,5 +41,11 @@ fn main() {
         Subcommand::Capabilities(v) => match v {
             subcommand::Capabilities::Get(v) => command::capabilities::get(v),
         },
+        Subcommand::Schedule(v) => match v {
+            subcommand::Schedule::Set(v) => command::schedule::set(v),
+            subcommand::Schedule::Get(v) => command::schedule::get(v),
+            subcommand::Schedule::Create(v) => command::schedule::create(v),
+            subcommand::Schedule::Delete(v) => command::schedule::delete(v),
+        },
     };
 }
