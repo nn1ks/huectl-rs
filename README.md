@@ -15,7 +15,7 @@ A command line interface to Philips Hue using the [huelib](https://github.com/yu
 ```sh
 git clone https://github.com/yuqio/huectl-rs
 cd huectl-rs
-cargo install --release
+cargo install --path .
 ```
 
 ## Configuration
@@ -44,4 +44,5 @@ SUBCOMMANDS:
     light           Modifies, prints, searches or deletes lights
     register        Registers a new user on a bridge
     scene           Modifies, prints, creates or deletes scenes
+    schedule        Modifies, prints, creates or deletes schedules
 ```
