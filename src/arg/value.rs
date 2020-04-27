@@ -1,5 +1,5 @@
 use crate::arg;
-use huelib::{CoordinateModifierType, ModifierType};
+use huelib::resource::{self, ModifierType};
 
 fn parse_with_suffix<T: std::str::FromStr>(
     value_str: &str,
@@ -85,62 +85,6 @@ impl std::str::FromStr for Saturation {
 }
 
 #[derive(Debug)]
-pub struct ColorSpaceCoordinates {
-    pub modifier_type: CoordinateModifierType,
-    pub value: (f32, f32),
-}
-
-impl std::str::FromStr for ColorSpaceCoordinates {
-    type Err = arg::ParseError;
-    fn from_str(s: &str) -> Result<Self, arg::ParseError> {
-        let values: Vec<&str> = s.split(',').collect();
-        let (x, y) = match values[..] {
-            [x, y] => {
-                let error =
-                    arg::ParseError::new("The value must be a floating point number with 32 bits.");
-                (
-                    parse_with_suffix::<f32>(x, error.clone())?,
-                    parse_with_suffix::<f32>(y, error)?,
-                )
-            }
-            _ => {
-                return Err(arg::ParseError::new(
-                    "The value must be a comma seperated list of floating point numbers.",
-                ))
-            }
-        };
-        let modifier_type = match (x.0, y.0) {
-            (ModifierType::Override, ModifierType::Override) => CoordinateModifierType::Override,
-            (ModifierType::Increment, ModifierType::Increment) => CoordinateModifierType::Increment,
-            (ModifierType::Decrement, ModifierType::Decrement) => CoordinateModifierType::Decrement,
-            (ModifierType::Increment, ModifierType::Decrement) => {
-                CoordinateModifierType::IncrementDecrement
-            }
-            (ModifierType::Decrement, ModifierType::Increment) => {
-                CoordinateModifierType::DecrementIncrement
-            }
-            _ => {
-                return Err(arg::ParseError::new(
-                    "Either both coordinates must have a prefix or both coordinates must have no prefix"
-                ));
-            }
-        };
-        let max_value = match modifier_type {
-            CoordinateModifierType::Override => 1.0,
-            _ => 0.5,
-        };
-        if x.1 > max_value || x.1 < 0.0 || y.1 > max_value || y.1 < 0.0 {
-            Err(arg::ParseError::from_float_value(&max_value))
-        } else {
-            Ok(Self {
-                modifier_type,
-                value: (x.1, y.1),
-            })
-        }
-    }
-}
-
-#[derive(Debug)]
 pub struct ColorTemperature {
     pub modifier_type: ModifierType,
     pub value: u16,
@@ -160,7 +104,7 @@ impl std::str::FromStr for ColorTemperature {
 
 #[derive(Debug)]
 pub struct Alert {
-    pub value: huelib::Alert,
+    pub value: resource::Alert,
 }
 
 impl Alert {
@@ -173,9 +117,9 @@ impl std::str::FromStr for Alert {
     type Err = arg::ParseError;
     fn from_str(s: &str) -> Result<Self, arg::ParseError> {
         let value = match s.to_lowercase().as_ref() {
-            "select" => huelib::Alert::Select,
-            "lselect" => huelib::Alert::LSelect,
-            "none" => huelib::Alert::None,
+            "select" => resource::Alert::Select,
+            "lselect" => resource::Alert::LSelect,
+            "none" => resource::Alert::None,
             _ => return Err(arg::ParseError::new("Invalid value for alert")),
         };
         Ok(Self { value })
@@ -184,7 +128,7 @@ impl std::str::FromStr for Alert {
 
 #[derive(Debug)]
 pub struct Effect {
-    pub value: huelib::Effect,
+    pub value: resource::Effect,
 }
 
 impl Effect {
@@ -197,8 +141,8 @@ impl std::str::FromStr for Effect {
     type Err = arg::ParseError;
     fn from_str(s: &str) -> Result<Self, arg::ParseError> {
         let value = match s.to_lowercase().as_ref() {
-            "colorloop" => huelib::Effect::Colorloop,
-            "none" => huelib::Effect::None,
+            "colorloop" => resource::Effect::Colorloop,
+            "none" => resource::Effect::None,
             _ => return Err(arg::ParseError::new("Invalid value for effect")),
         };
         Ok(Self { value })
@@ -207,7 +151,7 @@ impl std::str::FromStr for Effect {
 
 #[derive(Debug)]
 pub struct GroupTypeCreator {
-    pub value: huelib::group::TypeCreator,
+    pub value: resource::group::CreatableKind,
 }
 
 impl GroupTypeCreator {
@@ -219,12 +163,12 @@ impl GroupTypeCreator {
 impl std::str::FromStr for GroupTypeCreator {
     type Err = arg::ParseError;
     fn from_str(s: &str) -> Result<Self, arg::ParseError> {
-        use huelib::group::TypeCreator;
+        use resource::group::CreatableKind;
         let value = match s.to_lowercase().as_ref() {
-            "lightgroup" => TypeCreator::LightGroup,
-            "room" => TypeCreator::Room,
-            "entertainment" => TypeCreator::Entertainment,
-            "zone" => TypeCreator::Zone,
+            "lightgroup" => CreatableKind::LightGroup,
+            "room" => CreatableKind::Room,
+            "entertainment" => CreatableKind::Entertainment,
+            "zone" => CreatableKind::Zone,
             _ => return Err(arg::ParseError::new("Invalid value for kind")),
         };
         Ok(Self { value })
@@ -233,7 +177,7 @@ impl std::str::FromStr for GroupTypeCreator {
 
 #[derive(Debug)]
 pub struct GroupClass {
-    pub value: huelib::group::Class,
+    pub value: resource::group::Class,
 }
 
 impl GroupClass {
@@ -286,7 +230,7 @@ impl GroupClass {
 impl std::str::FromStr for GroupClass {
     type Err = arg::ParseError;
     fn from_str(s: &str) -> Result<Self, arg::ParseError> {
-        use huelib::group::Class;
+        use resource::group::Class;
         let value = match s.to_lowercase().as_ref() {
             "attic" => Class::Attic,
             "balcony" => Class::Balcony,
@@ -336,7 +280,7 @@ impl std::str::FromStr for GroupClass {
 
 #[derive(Debug)]
 pub struct SceneType {
-    pub value: huelib::scene::Kind,
+    pub value: resource::scene::Kind,
 }
 
 impl SceneType {
@@ -348,7 +292,7 @@ impl SceneType {
 impl std::str::FromStr for SceneType {
     type Err = arg::ParseError;
     fn from_str(s: &str) -> Result<Self, arg::ParseError> {
-        use huelib::scene::Kind;
+        use resource::scene::Kind;
         let value = match s.to_lowercase().as_ref() {
             "lightscene" => Kind::LightScene,
             "groupscene" => Kind::GroupScene,
@@ -360,7 +304,7 @@ impl std::str::FromStr for SceneType {
 
 #[derive(Debug)]
 pub struct ScheduleRequestType {
-    pub value: huelib::schedule::CommandRequestType,
+    pub value: resource::ActionRequestType,
 }
 
 impl ScheduleRequestType {
@@ -372,11 +316,11 @@ impl ScheduleRequestType {
 impl std::str::FromStr for ScheduleRequestType {
     type Err = arg::ParseError;
     fn from_str(s: &str) -> Result<Self, arg::ParseError> {
-        use huelib::schedule::CommandRequestType;
+        use resource::ActionRequestType;
         let value = match s.to_lowercase().as_ref() {
-            "put" => CommandRequestType::Put,
-            "post" => CommandRequestType::Post,
-            "delete" => CommandRequestType::Delete,
+            "put" => ActionRequestType::Put,
+            "post" => ActionRequestType::Post,
+            "delete" => ActionRequestType::Delete,
             _ => return Err(arg::ParseError::new("Invalid value for request type")),
         };
         Ok(Self { value })

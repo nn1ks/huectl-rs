@@ -1,5 +1,5 @@
 use crate::{arg::value, util};
-use huelib::Modifier;
+use huelib::resource::{self, scene, Modifier};
 use std::fmt;
 use structopt::StructOpt;
 
@@ -35,8 +35,8 @@ pub struct Set {
 }
 
 impl Set {
-    pub fn to_modifier(&self) -> huelib::scene::Modifier {
-        let mut modifier = huelib::scene::Modifier::new();
+    pub fn to_modifier(&self) -> scene::Modifier {
+        let mut modifier = scene::Modifier::new();
         if let Some(v) = &self.name {
             modifier = modifier.name(v);
         }
@@ -105,20 +105,16 @@ pub struct Create {
 }
 
 impl Create {
-    pub fn to_creator(&self) -> huelib::scene::Creator {
-        let mut creator = huelib::scene::Creator::new(&self.name, self.lights.clone());
+    pub fn to_creator(&self) -> scene::Creator {
+        let mut creator = scene::Creator::new(&self.name, self.lights.clone());
         if let Some(v) = &self.kind {
             creator = creator.kind(v.value);
         }
-        let mut app_data = huelib::scene::AppData::new();
         if let Some(v) = self.app_version {
-            app_data = app_data.version(v);
+            creator = creator.app_version(v);
         }
         if let Some(v) = &self.app_data {
-            app_data = app_data.data(v.clone());
-        }
-        if app_data.version != None || app_data.data != None {
-            creator = creator.app_data(app_data);
+            creator = creator.app_data(v);
         }
         creator
     }
@@ -144,7 +140,7 @@ pub fn delete(arg: Delete) {
     };
 }
 
-struct SceneDisplay(huelib::Scene);
+struct SceneDisplay(resource::Scene);
 
 impl fmt::Display for SceneDisplay {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {

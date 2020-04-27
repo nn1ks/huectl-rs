@@ -1,4 +1,5 @@
 use crate::{arg::value, util};
+use huelib::resource::{self, schedule, Modifier};
 use std::fmt;
 use structopt::StructOpt;
 
@@ -42,12 +43,12 @@ pub struct Set {
 }
 
 impl Set {
-    pub fn to_modifier(&self) -> huelib::schedule::Modifier {
-        let mut modifier = huelib::schedule::Modifier::new();
+    pub fn to_modifier(&self) -> schedule::Modifier {
+        let mut modifier = schedule::Modifier::new();
         if self.on {
-            modifier = modifier.status(huelib::schedule::Status::Enabled);
+            modifier = modifier.status(schedule::Status::Enabled);
         } else if self.off {
-            modifier = modifier.status(huelib::schedule::Status::Disabled);
+            modifier = modifier.status(schedule::Status::Disabled);
         }
         if let Some(v) = &self.name {
             modifier = modifier.name(v);
@@ -139,9 +140,9 @@ pub struct Create {
 }
 
 impl Create {
-    pub fn to_creator(&self) -> huelib::schedule::Creator {
-        let mut creator = huelib::schedule::Creator::new(
-            huelib::schedule::Command {
+    pub fn to_creator(&self) -> schedule::Creator {
+        let mut creator = schedule::Creator::new(
+            resource::Action {
                 address: self.address.clone(),
                 request_type: self.request_type.value,
                 body: std::collections::HashMap::new(),
@@ -155,9 +156,9 @@ impl Create {
             creator = creator.description(v);
         }
         if self.on {
-            creator = creator.status(huelib::schedule::Status::Enabled);
+            creator = creator.status(schedule::Status::Enabled);
         } else if self.off {
-            creator = creator.status(huelib::schedule::Status::Disabled);
+            creator = creator.status(schedule::Status::Disabled);
         }
         if self.auto_delete {
             creator = creator.auto_delete(true);
@@ -193,7 +194,7 @@ pub fn delete(arg: Delete) {
     };
 }
 
-struct ScheduleDisplay(huelib::Schedule);
+struct ScheduleDisplay(resource::Schedule);
 
 impl fmt::Display for ScheduleDisplay {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -201,12 +202,12 @@ impl fmt::Display for ScheduleDisplay {
         output.push_str(&format!("Schedule {}:\n", self.0.id));
         output.push_str(&format!("    Name: {}\n", self.0.name));
         output.push_str(&format!("    Description: {}\n", self.0.description));
-        output.push_str(&format!("    CommandAddress: {}\n", self.0.command.address));
+        output.push_str(&format!("    CommandAddress: {}\n", self.0.action.address));
         output.push_str(&format!(
-            "    CommandRequestType: {:?}\n",
-            self.0.command.request_type
+            "    ActionRequestType: {:?}\n",
+            self.0.action.request_type
         ));
-        output.push_str(&format!("    CommandBody: {:?}\n", self.0.command.body));
+        output.push_str(&format!("    CommandBody: {:?}\n", self.0.action.body));
         output.push_str(&format!("    LocalTime: {}\n", self.0.local_time));
         if let Some(v) = self.0.start_time {
             output.push_str(&format!("    StartTime: {}\n", v));

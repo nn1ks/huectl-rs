@@ -143,13 +143,6 @@ impl ParseError {
             max_value
         ))
     }
-
-    pub fn from_float_value<T: fmt::Display>(max_value: &T) -> Self {
-        Self::new(&format!(
-            "The value must be a floating point number between 0 and {} and can have '-' or '+' as prefix.",
-            max_value
-        ))
-    }
 }
 
 impl std::error::Error for ParseError {}

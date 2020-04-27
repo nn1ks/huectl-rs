@@ -1,5 +1,6 @@
 use crate::{arg::value, util};
-use huelib::Modifier;
+use huelib::resource::{self, light, Modifier};
+use huelib::Color;
 use std::fmt;
 use structopt::StructOpt;
 
@@ -38,8 +39,10 @@ pub struct Set {
     #[structopt(long, short = "t", allow_hyphen_values = true)]
     color_temperature: Option<value::ColorTemperature>,
     /// Sets the x and y coordinates in the color space of the light
-    #[structopt(long, short, name = "x,y", allow_hyphen_values = true)]
-    color_space_coordinates: Option<value::ColorSpaceCoordinates>,
+    // #[structopt(long, short, name = "x,y", allow_hyphen_values = true)]
+    // color_space_coordinates: Option<value::ColorSpaceCoordinates>,
+    #[structopt(long, short, name = "coordinate", min_values = 2, max_values = 2)]
+    color_space_coordinates: Option<Vec<f32>>,
     /// Sets the alert effect of the light
     #[structopt(long, short, case_insensitive = true, possible_values = value::Alert::variants())]
     alert: Option<value::Alert>,
@@ -55,8 +58,8 @@ pub struct Set {
 }
 
 impl Set {
-    pub fn to_state_modifier(&self) -> huelib::light::StateModifier {
-        let mut state_modifier = huelib::light::StateModifier::new();
+    pub fn to_state_modifier(&self) -> light::StateModifier {
+        let mut state_modifier = light::StateModifier::new();
         if self.on {
             state_modifier = state_modifier.on(true);
         } else if self.off {
@@ -72,7 +75,7 @@ impl Set {
             state_modifier = state_modifier.saturation(v.modifier_type, v.value);
         }
         if let Some(v) = &self.color_space_coordinates {
-            state_modifier = state_modifier.color_space_coordinates(v.modifier_type, v.value);
+            state_modifier = state_modifier.color(Color::from_space_coordinates(v[0], v[1]));
         }
         if let Some(v) = &self.color_temperature {
             state_modifier = state_modifier.color_temperature(v.modifier_type, v.value);
@@ -89,8 +92,8 @@ impl Set {
         state_modifier
     }
 
-    pub fn to_attribute_modifier(&self) -> huelib::light::AttributeModifier {
-        let mut attribute_modifier = huelib::light::AttributeModifier::new();
+    pub fn to_attribute_modifier(&self) -> light::AttributeModifier {
+        let mut attribute_modifier = light::AttributeModifier::new();
         if let Some(v) = &self.name {
             attribute_modifier = attribute_modifier.name(v);
         }
@@ -158,7 +161,7 @@ pub fn search(arg: Search) {
     if arg.get {
         match bridge.get_new_lights() {
             Ok(v) => {
-                use huelib::light::LastScan;
+                use resource::LastScan;
                 match v.last_scan {
                     LastScan::DateTime(v) => println!("Last scan: {}", v),
                     LastScan::Active => {
@@ -166,11 +169,11 @@ pub fn search(arg: Search) {
                     }
                     LastScan::None => (),
                 };
-                if v.lights.is_empty() {
+                if v.resources.is_empty() {
                     println!("No lights were discovered");
                 } else {
                     println!("Discovered lights:");
-                    for i in v.lights {
+                    for i in v.resources {
                         println!("{:?}", i);
                     }
                 }
@@ -198,7 +201,7 @@ pub fn delete(arg: Delete) {
     };
 }
 
-struct LightDisplay(huelib::Light);
+struct LightDisplay(resource::Light);
 
 impl fmt::Display for LightDisplay {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {

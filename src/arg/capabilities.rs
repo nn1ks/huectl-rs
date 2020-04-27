@@ -1,4 +1,5 @@
 use crate::util;
+use huelib::resource;
 use std::fmt;
 use structopt::StructOpt;
 
@@ -15,7 +16,7 @@ pub fn get() {
     };
 }
 
-struct CapabilitiesDisplay(huelib::Capabilities);
+struct CapabilitiesDisplay(resource::Capabilities);
 
 impl fmt::Display for CapabilitiesDisplay {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {

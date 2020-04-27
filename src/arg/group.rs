@@ -1,5 +1,6 @@
 use crate::{arg::value, util};
-use huelib::Modifier;
+use huelib::resource::{self, group, Modifier};
+use huelib::Color;
 use std::fmt;
 use structopt::StructOpt;
 
@@ -38,8 +39,8 @@ pub struct Set {
     #[structopt(long, short = "t", allow_hyphen_values = true)]
     color_temperature: Option<value::ColorTemperature>,
     /// Sets the x and y coordinates in the color space of the lights
-    #[structopt(long, short, name = "x,y", allow_hyphen_values = true)]
-    color_space_coordinates: Option<value::ColorSpaceCoordinates>,
+    #[structopt(long, short, name = "coordinate", min_values = 2, max_values = 2)]
+    color_space_coordinates: Option<Vec<f32>>,
     /// Sets the alert effect of the lights
     #[structopt(long, short, case_insensitive = true, possible_values = value::Alert::variants())]
     alert: Option<value::Alert>,
@@ -61,8 +62,8 @@ pub struct Set {
 }
 
 impl Set {
-    pub fn to_state_modifier(&self) -> huelib::group::StateModifier {
-        let mut modifier = huelib::group::StateModifier::new();
+    pub fn to_state_modifier(&self) -> group::StateModifier {
+        let mut modifier = group::StateModifier::new();
         if self.on {
             modifier = modifier.on(true);
         } else if self.off {
@@ -78,7 +79,7 @@ impl Set {
             modifier = modifier.saturation(v.modifier_type, v.value);
         }
         if let Some(v) = &self.color_space_coordinates {
-            modifier = modifier.color_space_coordinates(v.modifier_type, v.value);
+            modifier = modifier.color(Color::from_space_coordinates(v[0], v[1]));
         }
         if let Some(v) = &self.color_temperature {
             modifier = modifier.color_temperature(v.modifier_type, v.value);
@@ -95,8 +96,8 @@ impl Set {
         modifier
     }
 
-    pub fn to_attribute_modifier(&self) -> huelib::group::AttributeModifier {
-        let mut modifier = huelib::group::AttributeModifier::new();
+    pub fn to_attribute_modifier(&self) -> group::AttributeModifier {
+        let mut modifier = group::AttributeModifier::new();
         if let Some(v) = &self.name {
             modifier = modifier.name(v);
         }
@@ -174,19 +175,15 @@ pub struct Create {
 }
 
 impl Create {
-    pub fn to_creator(&self) -> huelib::group::Creator {
-        huelib::group::Creator {
-            name: self.name.clone(),
-            lights: self.lights.clone(),
-            kind: match &self.kind {
-                Some(v) => Some(v.value),
-                None => None,
-            },
-            class: match &self.class {
-                Some(v) => Some(v.value),
-                None => None,
-            },
+    pub fn to_creator(&self) -> group::Creator {
+        let mut creator = group::Creator::new(&self.name, self.lights.clone());
+        if let Some(v) = &self.kind {
+            creator = creator.kind(v.value);
         }
+        if let Some(v) = &self.class {
+            creator = creator.class(v.value);
+        }
+        creator
     }
 }
 
@@ -210,7 +207,7 @@ pub fn delete(arg: Delete) {
     };
 }
 
-struct GroupDisplay(huelib::Group);
+struct GroupDisplay(resource::Group);
 
 impl fmt::Display for GroupDisplay {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {

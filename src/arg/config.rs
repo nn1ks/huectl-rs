@@ -1,5 +1,5 @@
 use crate::util;
-use huelib::Modifier;
+use huelib::resource::{self, config, Modifier};
 use std::{fmt, net::IpAddr};
 use structopt::StructOpt;
 
@@ -55,8 +55,8 @@ pub struct Set {
 }
 
 impl Set {
-    pub fn to_modifier(&self) -> huelib::config::Modifier {
-        let mut modifier = huelib::config::Modifier::new();
+    pub fn to_modifier(&self) -> config::Modifier {
+        let mut modifier = config::Modifier::new();
         if let Some(v) = &self.name {
             modifier = modifier.name(v);
         }
@@ -118,7 +118,7 @@ pub fn get() {
     };
 }
 
-struct ConfigDisplay(huelib::Config);
+struct ConfigDisplay(resource::Config);
 
 impl fmt::Display for ConfigDisplay {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
