@@ -61,6 +61,9 @@ pub struct Set {
     /// Sets the lights that are in the group
     #[structopt(long, short)]
     lights: Option<Vec<String>>,
+    /// Sets the sensors that are in the group
+    #[structopt(long)]
+    sensors: Option<Vec<String>>,
     /// Sets the class of the group
     #[structopt(long, case_insensitive = true, possible_values = value::GroupClass::variants())]
     class: Option<value::GroupClass>,
@@ -114,6 +117,9 @@ impl Set {
         }
         if let Some(v) = &self.lights {
             modifier = modifier.lights(v.clone());
+        }
+        if let Some(v) = &self.sensors {
+            modifier = modifier.sensors(v.clone());
         }
         if let Some(v) = &self.class {
             modifier = modifier.class(v.0);
