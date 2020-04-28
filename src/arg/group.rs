@@ -1,7 +1,6 @@
-use crate::{arg::value, util};
-use huelib::resource::{self, group, Modifier};
+use crate::{arg::value, output::Group as OutputGroup, util};
+use huelib::resource::{group, Modifier};
 use huelib::Color;
-use std::fmt;
 use structopt::StructOpt;
 
 #[derive(Debug, StructOpt)]
@@ -157,14 +156,16 @@ pub fn get(arg: Get) {
     let bridge = util::get_bridge();
     match arg.id {
         Some(v) => match bridge.get_group(&v) {
-            Ok(v) => println!("{}", GroupDisplay(v)),
+            Ok(v) => println!(
+                "{}",
+                serde_json::to_string_pretty(&OutputGroup::from(v)).unwrap()
+            ),
             Err(e) => exit!("Failed to get group", e),
         },
         None => match bridge.get_all_groups() {
             Ok(v) => {
-                for group in v {
-                    println!("{}\n", GroupDisplay(group));
-                }
+                let groups: Vec<OutputGroup> = v.into_iter().map(OutputGroup::from).collect();
+                println!("{}", serde_json::to_string_pretty(&groups).unwrap());
             }
             Err(e) => exit!("Failed to get groups", e),
         },
@@ -217,31 +218,4 @@ pub fn delete(arg: Delete) {
         Ok(_) => println!("Deleted group {}", arg.id),
         Err(e) => exit!("Failed to delete group", e),
     };
-}
-
-struct GroupDisplay(resource::Group);
-
-impl fmt::Display for GroupDisplay {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        let mut output = String::new();
-        output.push_str(&format!("Group {}:\n", self.0.id));
-        output.push_str(&format!("    Name: {:?}\n", self.0.name));
-        output.push_str(&format!("    Lights: {:?}\n", self.0.lights));
-        output.push_str(&format!("    Kind: {:?}\n", self.0.kind));
-        if let Some(v) = self.0.class {
-            output.push_str(&format!("    Class: {:?}\n", v));
-        }
-        if let Some(v) = self.0.state {
-            output.push_str(&format!("    AnyOn: {}\n", v.any_on));
-            output.push_str(&format!("    AllOn: {}\n", v.all_on));
-        }
-        if let Some(v) = &self.0.model_id {
-            output.push_str(&format!("    ModelId: {:?}\n", v));
-        }
-        if let Some(v) = &self.0.unique_id {
-            output.push_str(&format!("    UniqueId: {:?}\n", v));
-        }
-        output.pop();
-        write!(f, "{}", output)
-    }
 }

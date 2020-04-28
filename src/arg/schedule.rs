@@ -1,6 +1,5 @@
-use crate::{arg::value, util};
+use crate::{arg::value, output::Schedule as OutputSchedule, util};
 use huelib::resource::{self, schedule, Modifier};
-use std::fmt;
 use structopt::StructOpt;
 
 #[derive(Debug, StructOpt)]
@@ -88,14 +87,17 @@ pub fn get(arg: Get) {
     let bridge = util::get_bridge();
     match arg.id {
         Some(v) => match bridge.get_schedule(&v) {
-            Ok(v) => println!("{}", ScheduleDisplay(v)),
+            Ok(v) => println!(
+                "{}",
+                serde_json::to_string_pretty(&OutputSchedule::from(v)).unwrap()
+            ),
             Err(e) => exit!("Failed to get schedule", e),
         },
         None => match bridge.get_all_schedules() {
             Ok(v) => {
-                for schedule in v {
-                    println!("{}\n", ScheduleDisplay(schedule));
-                }
+                let schedules: Vec<OutputSchedule> =
+                    v.into_iter().map(OutputSchedule::from).collect();
+                println!("{}", serde_json::to_string_pretty(&schedules).unwrap());
             }
             Err(e) => exit!("Failed to get schedules", e),
         },
@@ -192,31 +194,4 @@ pub fn delete(arg: Delete) {
         Ok(_) => println!("Deleted schedule {}", arg.id),
         Err(e) => exit!("Failed to delete schedule", e),
     };
-}
-
-struct ScheduleDisplay(resource::Schedule);
-
-impl fmt::Display for ScheduleDisplay {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        let mut output = String::new();
-        output.push_str(&format!("Schedule {}:\n", self.0.id));
-        output.push_str(&format!("    Name: {}\n", self.0.name));
-        output.push_str(&format!("    Description: {}\n", self.0.description));
-        output.push_str(&format!("    CommandAddress: {}\n", self.0.action.address));
-        output.push_str(&format!(
-            "    ActionRequestType: {:?}\n",
-            self.0.action.request_type
-        ));
-        output.push_str(&format!("    CommandBody: {:?}\n", self.0.action.body));
-        output.push_str(&format!("    LocalTime: {}\n", self.0.local_time));
-        if let Some(v) = self.0.start_time {
-            output.push_str(&format!("    StartTime: {}\n", v));
-        }
-        output.push_str(&format!("    Status: {:?}\n", self.0.status));
-        if let Some(v) = self.0.auto_delete {
-            output.push_str(&format!("    AutoDelete: {}\n", v));
-        }
-        output.pop();
-        write!(f, "{}", output)
-    }
 }

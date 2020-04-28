@@ -1,6 +1,5 @@
-use crate::{arg::value, util};
-use huelib::resource::{self, scene, Modifier};
-use std::fmt;
+use crate::{arg::value, output::Scene as OutputScene, util};
+use huelib::resource::{scene, Modifier};
 use structopt::StructOpt;
 
 #[derive(Debug, StructOpt)]
@@ -72,14 +71,16 @@ pub fn get(arg: Get) {
     let bridge = util::get_bridge();
     match arg.id {
         Some(v) => match bridge.get_scene(&v) {
-            Ok(v) => println!("{}", SceneDisplay(v)),
+            Ok(v) => println!(
+                "{}",
+                serde_json::to_string_pretty(&OutputScene::from(v)).unwrap()
+            ),
             Err(e) => exit!("Failed to get scene", e),
         },
         None => match bridge.get_all_scenes() {
             Ok(v) => {
-                for scene in v {
-                    println!("{}\n", SceneDisplay(scene));
-                }
+                let scenes: Vec<OutputScene> = v.into_iter().map(OutputScene::from).collect();
+                println!("{}", serde_json::to_string_pretty(&scenes).unwrap());
             }
             Err(e) => exit!("Failed to get scenes", e),
         },
@@ -138,43 +139,4 @@ pub fn delete(arg: Delete) {
         Ok(_) => println!("Deleted scene {}", arg.id),
         Err(e) => exit!("Failed to delete scene", e),
     };
-}
-
-struct SceneDisplay(resource::Scene);
-
-impl fmt::Display for SceneDisplay {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        let mut output = String::new();
-        output.push_str(&format!("Scene {}:\n", self.0.id));
-        output.push_str(&format!("    Name: {}\n", self.0.name));
-        output.push_str(&format!("    Kind: {:?}\n", self.0.kind));
-        if let Some(v) = &self.0.group {
-            output.push_str(&format!("    Group: {}\n", v));
-        }
-        if let Some(v) = &self.0.lights {
-            output.push_str(&format!("    Lights: {:?}\n", v));
-        }
-        if let Some(v) = &self.0.owner {
-            output.push_str(&format!("    Owner: {}\n", v));
-        }
-        output.push_str(&format!("    Recycle: {}\n", self.0.recycle));
-        output.push_str(&format!("    Locked: {}\n", self.0.locked));
-        if let Some(v) = self.0.app_data.version {
-            output.push_str(&format!("    AppVersion: {}\n", v));
-        }
-        if let Some(v) = &self.0.app_data.data {
-            output.push_str(&format!("    AppData: {}\n", v));
-        }
-        if let Some(v) = &self.0.picture {
-            if !v.is_empty() {
-                output.push_str(&format!("    Picture: {}\n", v));
-            }
-        }
-        if let Some(v) = self.0.last_update {
-            output.push_str(&format!("    LastUpdate: {}\n", v));
-        }
-        output.push_str(&format!("    Version: {:?}\n", self.0.version));
-        output.pop();
-        write!(f, "{}", output)
-    }
 }

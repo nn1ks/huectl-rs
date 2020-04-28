@@ -6,6 +6,7 @@ mod util;
 
 mod arg;
 mod config;
+mod output;
 
 fn main() {
     arg::exec();
