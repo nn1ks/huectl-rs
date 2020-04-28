@@ -41,6 +41,12 @@ pub struct Set {
     /// Sets the x and y coordinates in the color space of the lights
     #[structopt(long, short, name = "coordinate", min_values = 2, max_values = 2)]
     color_space_coordinates: Option<Vec<f32>>,
+    /// Sets the color of the lights with red, green, and blue values
+    #[structopt(long, short = "r", min_values = 3, max_values = 3)]
+    color_rgb: Option<Vec<u8>>,
+    /// Sets the color of the lights with a hex value
+    #[structopt(long, short = "x")]
+    color_hex: Option<value::ColorHex>,
     /// Sets the alert effect of the lights
     #[structopt(long, short, case_insensitive = true, possible_values = value::Alert::variants())]
     alert: Option<value::Alert>,
@@ -80,6 +86,12 @@ impl Set {
         }
         if let Some(v) = &self.color_space_coordinates {
             modifier = modifier.color(Color::from_space_coordinates(v[0], v[1]));
+        }
+        if let Some(v) = &self.color_rgb {
+            modifier = modifier.color(Color::from_rgb(v[0], v[1], v[2]));
+        }
+        if let Some(v) = &self.color_hex {
+            modifier = modifier.color(v.value);
         }
         if let Some(v) = &self.color_temperature {
             modifier = modifier.color_temperature(v.modifier_type, v.value);

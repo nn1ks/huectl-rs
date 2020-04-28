@@ -39,10 +39,14 @@ pub struct Set {
     #[structopt(long, short = "t", allow_hyphen_values = true)]
     color_temperature: Option<value::ColorTemperature>,
     /// Sets the x and y coordinates in the color space of the light
-    // #[structopt(long, short, name = "x,y", allow_hyphen_values = true)]
-    // color_space_coordinates: Option<value::ColorSpaceCoordinates>,
     #[structopt(long, short, name = "coordinate", min_values = 2, max_values = 2)]
     color_space_coordinates: Option<Vec<f32>>,
+    /// Sets the color of the light with red, green, and blue values
+    #[structopt(long, short = "r", min_values = 3, max_values = 3)]
+    color_rgb: Option<Vec<u8>>,
+    /// Sets the color of the light with a hex value
+    #[structopt(long, short = "x")]
+    color_hex: Option<value::ColorHex>,
     /// Sets the alert effect of the light
     #[structopt(long, short, case_insensitive = true, possible_values = value::Alert::variants())]
     alert: Option<value::Alert>,
@@ -76,6 +80,12 @@ impl Set {
         }
         if let Some(v) = &self.color_space_coordinates {
             state_modifier = state_modifier.color(Color::from_space_coordinates(v[0], v[1]));
+        }
+        if let Some(v) = &self.color_rgb {
+            state_modifier = state_modifier.color(Color::from_rgb(v[0], v[1], v[2]));
+        }
+        if let Some(v) = &self.color_hex {
+            state_modifier = state_modifier.color(v.value);
         }
         if let Some(v) = &self.color_temperature {
             state_modifier = state_modifier.color_temperature(v.modifier_type, v.value);

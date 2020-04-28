@@ -1,5 +1,6 @@
 use crate::arg;
 use huelib::resource::{self, ModifierType};
+use huelib::Color;
 
 fn parse_with_suffix<T: std::str::FromStr>(
     value_str: &str,
@@ -80,6 +81,22 @@ impl std::str::FromStr for Saturation {
         Ok(Self {
             modifier_type,
             value: (value as f32 * (u8::max_value() as f32 / max_value as f32)) as u8,
+        })
+    }
+}
+
+#[derive(Debug)]
+pub struct ColorHex {
+    pub value: Color,
+}
+
+impl std::str::FromStr for ColorHex {
+    type Err = arg::ParseError;
+    fn from_str(s: &str) -> Result<Self, arg::ParseError> {
+        Ok(Self {
+            value: Color::from_hex(s).map_err(|_| {
+                arg::ParseError::new("The value must begin with `#` followed by 3 or 6 hex values.")
+            })?,
         })
     }
 }
