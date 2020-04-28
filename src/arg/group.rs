@@ -185,22 +185,39 @@ pub struct Create {
     /// Sets the indentifiers of the lights that will be in this group
     #[structopt(long, short)]
     lights: Vec<String>,
+    /// Sets the indentifiers of the senors that will be in this group
+    #[structopt(long)]
+    sensors: Option<Vec<String>>,
     /// Sets the type of the group
     #[structopt(long, short, case_insensitive = true, possible_values = value::GroupTypeCreator::variants())]
     kind: Option<value::GroupTypeCreator>,
     /// Sets the class of the group
     #[structopt(long, case_insensitive = true, possible_values = value::GroupClass::variants())]
     class: Option<value::GroupClass>,
+    /// Enables automatic removal of the group if not referenced anymore
+    #[structopt(long, short)]
+    recycle: bool,
+    /// Disables automatic removal of the group if not referenced anymore
+    #[structopt(long, short = "R")]
+    no_recycle: bool,
 }
 
 impl Create {
     pub fn to_creator(&self) -> group::Creator {
         let mut creator = group::Creator::new(&self.name, self.lights.clone());
+        if let Some(v) = &self.sensors {
+            creator = creator.sensors(v.clone());
+        }
         if let Some(v) = &self.kind {
             creator = creator.kind(v.0);
         }
         if let Some(v) = &self.class {
             creator = creator.class(v.0);
+        }
+        if self.recycle {
+            creator = creator.recycle(true);
+        } else if self.no_recycle {
+            creator = creator.recycle(false);
         }
         creator
     }
