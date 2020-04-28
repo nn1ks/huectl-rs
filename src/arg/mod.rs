@@ -1,4 +1,3 @@
-mod capabilities;
 mod config;
 mod group;
 mod light;
@@ -36,9 +35,6 @@ pub fn exec() {
             scene::Arg::Create(v) => scene::create(v),
             scene::Arg::Delete(v) => scene::delete(v),
         },
-        Subcommand::Capabilities(v) => match v {
-            capabilities::Arg::Get => capabilities::get(),
-        },
         Subcommand::Schedule(v) => match v {
             schedule::Arg::Set(v) => schedule::set(v),
             schedule::Arg::Get(v) => schedule::get(v),
@@ -69,8 +65,6 @@ pub enum Subcommand {
     Group(group::Arg),
     /// Modifies, prints, creates or deletes scenes
     Scene(scene::Arg),
-    /// Prints capabilities of resources
-    Capabilities(capabilities::Arg),
     /// Modifies, prints, creates or deletes schedules
     Schedule(schedule::Arg),
 }
