@@ -144,7 +144,7 @@ impl Create {
         let mut creator = schedule::Creator::new(
             resource::Action {
                 address: self.address.clone(),
-                request_type: self.request_type.value,
+                request_type: self.request_type.0,
                 body: std::collections::HashMap::new(),
             },
             self.time.clone(),

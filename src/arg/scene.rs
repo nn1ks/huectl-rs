@@ -108,7 +108,7 @@ impl Create {
     pub fn to_creator(&self) -> scene::Creator {
         let mut creator = scene::Creator::new(&self.name, self.lights.clone());
         if let Some(v) = &self.kind {
-            creator = creator.kind(v.value);
+            creator = creator.kind(v.0);
         }
         if let Some(v) = self.app_version {
             creator = creator.app_version(v);

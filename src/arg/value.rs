@@ -24,10 +24,7 @@ fn parse_with_suffix<T: std::str::FromStr>(
 }
 
 #[derive(Debug)]
-pub struct Brightness {
-    pub modifier_type: ModifierType,
-    pub value: u8,
-}
+pub struct Brightness(pub ModifierType, pub u8);
 
 impl std::str::FromStr for Brightness {
     type Err = arg::ParseError;
@@ -38,36 +35,27 @@ impl std::str::FromStr for Brightness {
         if value > max_value {
             return Err(error);
         }
-        Ok(Self {
+        Ok(Self(
             modifier_type,
-            value: (value as f32 * (u8::max_value() as f32 / max_value as f32)) as u8,
-        })
+            (value as f32 * (u8::max_value() as f32 / max_value as f32)) as u8,
+        ))
     }
 }
 
 #[derive(Debug)]
-pub struct Hue {
-    pub modifier_type: ModifierType,
-    pub value: u16,
-}
+pub struct Hue(pub ModifierType, pub u16);
 
 impl std::str::FromStr for Hue {
     type Err = arg::ParseError;
     fn from_str(s: &str) -> Result<Self, arg::ParseError> {
-        let error = arg::ParseError::from_integer_value(&u16::max_value());
-        let (modifier_type, value) = parse_with_suffix::<u16>(s, error)?;
-        Ok(Self {
-            modifier_type,
-            value,
-        })
+        let (modifier_type, value) =
+            parse_with_suffix::<u16>(s, arg::ParseError::from_integer_value(&u16::max_value()))?;
+        Ok(Self(modifier_type, value))
     }
 }
 
 #[derive(Debug)]
-pub struct Saturation {
-    pub modifier_type: ModifierType,
-    pub value: u8,
-}
+pub struct Saturation(pub ModifierType, pub u8);
 
 impl std::str::FromStr for Saturation {
     type Err = arg::ParseError;
@@ -78,51 +66,39 @@ impl std::str::FromStr for Saturation {
         if value > max_value {
             return Err(error);
         }
-        Ok(Self {
+        Ok(Self(
             modifier_type,
-            value: (value as f32 * (u8::max_value() as f32 / max_value as f32)) as u8,
-        })
+            (value as f32 * (u8::max_value() as f32 / max_value as f32)) as u8,
+        ))
     }
 }
 
 #[derive(Debug)]
-pub struct ColorHex {
-    pub value: Color,
-}
+pub struct ColorHex(pub Color);
 
 impl std::str::FromStr for ColorHex {
     type Err = arg::ParseError;
     fn from_str(s: &str) -> Result<Self, arg::ParseError> {
-        Ok(Self {
-            value: Color::from_hex(s).map_err(|_| {
-                arg::ParseError::new("The value must begin with `#` followed by 3 or 6 hex values.")
-            })?,
-        })
+        Ok(Self(Color::from_hex(s).map_err(|_| {
+            arg::ParseError::new("The value must begin with `#` followed by 3 or 6 hex values.")
+        })?))
     }
 }
 
 #[derive(Debug)]
-pub struct ColorTemperature {
-    pub modifier_type: ModifierType,
-    pub value: u16,
-}
+pub struct ColorTemperature(pub ModifierType, pub u16);
 
 impl std::str::FromStr for ColorTemperature {
     type Err = arg::ParseError;
     fn from_str(s: &str) -> Result<Self, arg::ParseError> {
-        let error = arg::ParseError::from_integer_value(&u16::max_value());
-        let (modifier_type, value) = parse_with_suffix::<u16>(s, error)?;
-        Ok(Self {
-            modifier_type,
-            value,
-        })
+        let (modifier_type, value) =
+            parse_with_suffix::<u16>(s, arg::ParseError::from_integer_value(&u16::max_value()))?;
+        Ok(Self(modifier_type, value))
     }
 }
 
 #[derive(Debug)]
-pub struct Alert {
-    pub value: resource::Alert,
-}
+pub struct Alert(pub resource::Alert);
 
 impl Alert {
     pub fn variants() -> &'static [&'static str] {
@@ -139,14 +115,12 @@ impl std::str::FromStr for Alert {
             "none" => resource::Alert::None,
             _ => return Err(arg::ParseError::new("Invalid value for alert")),
         };
-        Ok(Self { value })
+        Ok(Self(value))
     }
 }
 
 #[derive(Debug)]
-pub struct Effect {
-    pub value: resource::Effect,
-}
+pub struct Effect(pub resource::Effect);
 
 impl Effect {
     pub fn variants() -> &'static [&'static str] {
@@ -162,14 +136,12 @@ impl std::str::FromStr for Effect {
             "none" => resource::Effect::None,
             _ => return Err(arg::ParseError::new("Invalid value for effect")),
         };
-        Ok(Self { value })
+        Ok(Self(value))
     }
 }
 
 #[derive(Debug)]
-pub struct GroupTypeCreator {
-    pub value: resource::group::CreatableKind,
-}
+pub struct GroupTypeCreator(pub resource::group::CreatableKind);
 
 impl GroupTypeCreator {
     pub fn variants() -> &'static [&'static str] {
@@ -188,14 +160,12 @@ impl std::str::FromStr for GroupTypeCreator {
             "zone" => CreatableKind::Zone,
             _ => return Err(arg::ParseError::new("Invalid value for kind")),
         };
-        Ok(Self { value })
+        Ok(Self(value))
     }
 }
 
 #[derive(Debug)]
-pub struct GroupClass {
-    pub value: resource::group::Class,
-}
+pub struct GroupClass(pub resource::group::Class);
 
 impl GroupClass {
     pub fn variants() -> &'static [&'static str] {
@@ -291,14 +261,12 @@ impl std::str::FromStr for GroupClass {
             "upstairs" => Class::Upstairs,
             _ => return Err(arg::ParseError::new("Invalid value for class")),
         };
-        Ok(Self { value })
+        Ok(Self(value))
     }
 }
 
 #[derive(Debug)]
-pub struct SceneType {
-    pub value: resource::scene::Kind,
-}
+pub struct SceneType(pub resource::scene::Kind);
 
 impl SceneType {
     pub fn variants() -> &'static [&'static str] {
@@ -315,14 +283,12 @@ impl std::str::FromStr for SceneType {
             "groupscene" => Kind::GroupScene,
             _ => return Err(arg::ParseError::new("Invalid value for kind")),
         };
-        Ok(Self { value })
+        Ok(Self(value))
     }
 }
 
 #[derive(Debug)]
-pub struct ScheduleRequestType {
-    pub value: resource::ActionRequestType,
-}
+pub struct ScheduleRequestType(pub resource::ActionRequestType);
 
 impl ScheduleRequestType {
     pub fn variants() -> &'static [&'static str] {
@@ -340,6 +306,6 @@ impl std::str::FromStr for ScheduleRequestType {
             "delete" => ActionRequestType::Delete,
             _ => return Err(arg::ParseError::new("Invalid value for request type")),
         };
-        Ok(Self { value })
+        Ok(Self(value))
     }
 }

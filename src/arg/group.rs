@@ -76,13 +76,13 @@ impl Set {
             modifier = modifier.on(false);
         }
         if let Some(v) = &self.brightness {
-            modifier = modifier.brightness(v.modifier_type, v.value);
+            modifier = modifier.brightness(v.0, v.1);
         }
         if let Some(v) = &self.hue {
-            modifier = modifier.hue(v.modifier_type, v.value);
+            modifier = modifier.hue(v.0, v.1);
         }
         if let Some(v) = &self.saturation {
-            modifier = modifier.saturation(v.modifier_type, v.value);
+            modifier = modifier.saturation(v.0, v.1);
         }
         if let Some(v) = &self.color_space_coordinates {
             modifier = modifier.color(Color::from_space_coordinates(v[0], v[1]));
@@ -91,16 +91,16 @@ impl Set {
             modifier = modifier.color(Color::from_rgb(v[0], v[1], v[2]));
         }
         if let Some(v) = &self.color_hex {
-            modifier = modifier.color(v.value);
+            modifier = modifier.color(v.0);
         }
         if let Some(v) = &self.color_temperature {
-            modifier = modifier.color_temperature(v.modifier_type, v.value);
+            modifier = modifier.color_temperature(v.0, v.1);
         }
         if let Some(v) = &self.alert {
-            modifier = modifier.alert(v.value);
+            modifier = modifier.alert(v.0);
         }
         if let Some(v) = &self.effect {
-            modifier = modifier.effect(v.value);
+            modifier = modifier.effect(v.0);
         }
         if let Some(v) = self.transition_time {
             modifier = modifier.transition_time(v);
@@ -117,7 +117,7 @@ impl Set {
             modifier = modifier.lights(v.clone());
         }
         if let Some(v) = &self.class {
-            modifier = modifier.class(v.value);
+            modifier = modifier.class(v.0);
         }
         modifier
     }
@@ -190,10 +190,10 @@ impl Create {
     pub fn to_creator(&self) -> group::Creator {
         let mut creator = group::Creator::new(&self.name, self.lights.clone());
         if let Some(v) = &self.kind {
-            creator = creator.kind(v.value);
+            creator = creator.kind(v.0);
         }
         if let Some(v) = &self.class {
-            creator = creator.class(v.value);
+            creator = creator.class(v.0);
         }
         creator
     }
