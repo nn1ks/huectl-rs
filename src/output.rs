@@ -312,6 +312,52 @@ impl std::convert::From<resource::resourcelink::Link> for ResourcelinkLink {
 }
 
 #[derive(Serialize)]
+pub struct Rule {
+    id: String,
+    name: String,
+    owner: Option<String>,
+    last_triggered: Option<String>,
+    times_triggered: usize,
+    created: String,
+    status: String,
+    conditions: Vec<RuleCondition>,
+    actions: Vec<Action>,
+}
+
+impl std::convert::From<resource::Rule> for Rule {
+    fn from(v: resource::Rule) -> Self {
+        Self {
+            id: v.id,
+            name: v.name,
+            owner: v.owner,
+            last_triggered: v.last_triggered.map(|v| v.to_string()),
+            times_triggered: v.times_triggered,
+            created: v.created.to_string(),
+            status: format!("{:?}", v.status),
+            conditions: v.conditions.into_iter().map(RuleCondition::from).collect(),
+            actions: v.actions.into_iter().map(Action::from).collect(),
+        }
+    }
+}
+
+#[derive(Serialize)]
+pub struct RuleCondition {
+    address: String,
+    operator: String,
+    value: Option<String>,
+}
+
+impl std::convert::From<resource::rule::Condition> for RuleCondition {
+    fn from(v: resource::rule::Condition) -> Self {
+        Self {
+            address: v.address,
+            operator: format!("{:?}", v.operator),
+            value: v.value,
+        }
+    }
+}
+
+#[derive(Serialize)]
 pub struct Scene {
     id: String,
     name: String,
