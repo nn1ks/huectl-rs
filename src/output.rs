@@ -33,7 +33,7 @@ pub struct Config {
     whitelist: Vec<ConfigUser>,
 }
 
-impl std::convert::From<resource::Config> for Config {
+impl From<resource::Config> for Config {
     fn from(v: resource::Config) -> Self {
         use resource::config::ServiceStatus;
         Self {
@@ -79,7 +79,7 @@ struct ConfigSoftwareUpdate {
     auto_install_time: Option<String>,
 }
 
-impl std::convert::From<resource::config::SoftwareUpdate> for ConfigSoftwareUpdate {
+impl From<resource::config::SoftwareUpdate> for ConfigSoftwareUpdate {
     fn from(v: resource::config::SoftwareUpdate) -> Self {
         Self {
             state: format!("{:?}", v.state),
@@ -98,7 +98,7 @@ struct ConfigBackup {
     error: Option<String>,
 }
 
-impl std::convert::From<resource::config::Backup> for ConfigBackup {
+impl From<resource::config::Backup> for ConfigBackup {
     fn from(v: resource::config::Backup) -> Self {
         use resource::config::{BackupError, BackupStatus};
         Self {
@@ -127,7 +127,7 @@ struct ConfigUser {
     created: String,
 }
 
-impl std::convert::From<resource::config::User> for ConfigUser {
+impl From<resource::config::User> for ConfigUser {
     fn from(v: resource::config::User) -> Self {
         Self {
             id: v.id,
@@ -152,7 +152,7 @@ pub struct Group {
     recycle: Option<bool>,
 }
 
-impl std::convert::From<resource::Group> for Group {
+impl From<resource::Group> for Group {
     fn from(v: resource::Group) -> Self {
         use resource::group::Kind;
         Self {
@@ -179,7 +179,7 @@ struct GroupState {
     all_on: bool,
 }
 
-impl std::convert::From<resource::group::State> for GroupState {
+impl From<resource::group::State> for GroupState {
     fn from(v: resource::group::State) -> Self {
         Self {
             any_on: v.any_on,
@@ -205,7 +205,7 @@ pub struct Light {
     // TODO: capabilities
 }
 
-impl std::convert::From<resource::Light> for Light {
+impl From<resource::Light> for Light {
     fn from(v: resource::Light) -> Self {
         Self {
             id: v.id,
@@ -237,7 +237,7 @@ struct LightState {
     reachable: bool,
 }
 
-impl std::convert::From<resource::light::State> for LightState {
+impl From<resource::light::State> for LightState {
     fn from(v: resource::light::State) -> Self {
         Self {
             on: v.on,
@@ -260,7 +260,7 @@ struct LightSoftwareUpdate {
     last_install: Option<String>,
 }
 
-impl std::convert::From<resource::light::SoftwareUpdate> for LightSoftwareUpdate {
+impl From<resource::light::SoftwareUpdate> for LightSoftwareUpdate {
     fn from(v: resource::light::SoftwareUpdate) -> Self {
         Self {
             state: format!("{:?}", v.state),
@@ -281,7 +281,7 @@ pub struct Resourcelink {
     links: Vec<ResourcelinkLink>,
 }
 
-impl std::convert::From<resource::Resourcelink> for Resourcelink {
+impl From<resource::Resourcelink> for Resourcelink {
     fn from(v: resource::Resourcelink) -> Self {
         Self {
             id: v.id,
@@ -302,7 +302,7 @@ pub struct ResourcelinkLink {
     id: String,
 }
 
-impl std::convert::From<resource::resourcelink::Link> for ResourcelinkLink {
+impl From<resource::resourcelink::Link> for ResourcelinkLink {
     fn from(v: resource::resourcelink::Link) -> Self {
         Self {
             kind: format!("{:?}", v.kind),
@@ -324,7 +324,7 @@ pub struct Rule {
     actions: Vec<Action>,
 }
 
-impl std::convert::From<resource::Rule> for Rule {
+impl From<resource::Rule> for Rule {
     fn from(v: resource::Rule) -> Self {
         Self {
             id: v.id,
@@ -347,7 +347,7 @@ pub struct RuleCondition {
     value: Option<String>,
 }
 
-impl std::convert::From<resource::rule::Condition> for RuleCondition {
+impl From<resource::rule::Condition> for RuleCondition {
     fn from(v: resource::rule::Condition) -> Self {
         Self {
             address: v.address,
@@ -373,7 +373,7 @@ pub struct Scene {
     version: String,
 }
 
-impl std::convert::From<resource::Scene> for Scene {
+impl From<resource::Scene> for Scene {
     fn from(v: resource::Scene) -> Self {
         Self {
             id: v.id,
@@ -398,7 +398,7 @@ struct SceneAppData {
     data: Option<String>,
 }
 
-impl std::convert::From<resource::scene::AppData> for SceneAppData {
+impl From<resource::scene::AppData> for SceneAppData {
     fn from(v: resource::scene::AppData) -> Self {
         Self {
             version: v.version,
@@ -419,7 +419,7 @@ pub struct Schedule {
     auto_delete: Option<bool>,
 }
 
-impl std::convert::From<resource::Schedule> for Schedule {
+impl From<resource::Schedule> for Schedule {
     fn from(v: resource::Schedule) -> Self {
         Self {
             id: v.id,
@@ -448,7 +448,7 @@ pub struct Sensor {
     recycle: Option<bool>,
 }
 
-impl std::convert::From<resource::Sensor> for Sensor {
+impl From<resource::Sensor> for Sensor {
     fn from(v: resource::Sensor) -> Self {
         Self {
             id: v.id,
@@ -472,7 +472,7 @@ pub struct SensorState {
     last_updated: Option<String>,
 }
 
-impl std::convert::From<resource::sensor::State> for SensorState {
+impl From<resource::sensor::State> for SensorState {
     fn from(v: resource::sensor::State) -> Self {
         Self {
             presence: v.presence,
@@ -489,7 +489,7 @@ pub struct SensorConfig {
     battery: Option<u8>,
 }
 
-impl std::convert::From<resource::sensor::Config> for SensorConfig {
+impl From<resource::sensor::Config> for SensorConfig {
     fn from(v: resource::sensor::Config) -> Self {
         Self {
             on: v.on,
@@ -505,7 +505,7 @@ pub struct Scan {
     resources: Vec<ScanResource>,
 }
 
-impl std::convert::From<resource::Scan> for Scan {
+impl From<resource::Scan> for Scan {
     fn from(v: resource::Scan) -> Self {
         use resource::LastScan;
         Self {
@@ -525,7 +525,7 @@ pub struct ScanResource {
     name: String,
 }
 
-impl std::convert::From<resource::ScanResource> for ScanResource {
+impl From<resource::ScanResource> for ScanResource {
     fn from(v: resource::ScanResource) -> Self {
         Self {
             id: v.id,
@@ -541,7 +541,7 @@ enum Alert {
     None,
 }
 
-impl std::convert::From<resource::Alert> for Alert {
+impl From<resource::Alert> for Alert {
     fn from(v: resource::Alert) -> Self {
         match v {
             resource::Alert::Select => Self::Select,
@@ -557,7 +557,7 @@ enum Effect {
     None,
 }
 
-impl std::convert::From<resource::Effect> for Effect {
+impl From<resource::Effect> for Effect {
     fn from(v: resource::Effect) -> Self {
         match v {
             resource::Effect::Colorloop => Self::Colorloop,
@@ -573,7 +573,7 @@ enum ColorMode {
     HueAndSaturation,
 }
 
-impl std::convert::From<resource::ColorMode> for ColorMode {
+impl From<resource::ColorMode> for ColorMode {
     fn from(v: resource::ColorMode) -> Self {
         match v {
             resource::ColorMode::ColorSpaceCoordinates => Self::ColorSpaceCoordinates,
@@ -590,7 +590,7 @@ struct Action {
     body: HashMap<String, JsonValue>,
 }
 
-impl std::convert::From<resource::Action> for Action {
+impl From<resource::Action> for Action {
     fn from(v: resource::Action) -> Self {
         Self {
             address: v.address,

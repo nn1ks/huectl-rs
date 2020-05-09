@@ -1,4 +1,4 @@
-use crate::{output::Sensor as OutputSensor, output::Scan as OutputScan, util};
+use crate::{output::Scan as OutputScan, output::Sensor as OutputSensor, util};
 use huelib::resource::{sensor, Modifier};
 use structopt::StructOpt;
 
@@ -86,12 +86,10 @@ pub fn set(arg: Set) {
     }
     let config_modifier = arg.to_config_modifier();
     if !config_modifier.is_empty() {
-        responses.extend(
-            match bridge.set_sensor_config(&arg.id, &config_modifier) {
-                Ok(v) => v,
-                Err(e) => exit!("Error occured while modifying the config of the sensor", e),
-            },
-        );
+        responses.extend(match bridge.set_sensor_config(&arg.id, &config_modifier) {
+            Ok(v) => v,
+            Err(e) => exit!("Error occured while modifying the config of the sensor", e),
+        });
     }
     for i in responses {
         println!("{}", i);

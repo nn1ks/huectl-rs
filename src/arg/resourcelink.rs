@@ -73,7 +73,8 @@ pub fn get(arg: Get) {
         },
         None => match bridge.get_all_resourcelinks() {
             Ok(v) => {
-                let resourcelinks: Vec<OutputResourcelink> = v.into_iter().map(OutputResourcelink::from).collect();
+                let resourcelinks: Vec<OutputResourcelink> =
+                    v.into_iter().map(OutputResourcelink::from).collect();
                 println!("{}", serde_json::to_string_pretty(&resourcelinks).unwrap());
             }
             Err(e) => exit!("Failed to get resourcelinks", e),
