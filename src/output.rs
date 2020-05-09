@@ -389,6 +389,71 @@ impl std::convert::From<resource::Schedule> for Schedule {
 }
 
 #[derive(Serialize)]
+pub struct Sensor {
+    id: String,
+    name: String,
+    type_name: String,
+    model_id: String,
+    unique_id: Option<String>,
+    manufacturer_name: Option<String>,
+    software_verion: String,
+    state: SensorState,
+    config: SensorConfig,
+    recycle: Option<bool>,
+}
+
+impl std::convert::From<resource::Sensor> for Sensor {
+    fn from(v: resource::Sensor) -> Self {
+        Self {
+            id: v.id,
+            name: v.name,
+            type_name: v.type_name,
+            model_id: v.model_id,
+            unique_id: v.unique_id,
+            manufacturer_name: v.manufacturer_name,
+            software_verion: v.software_verion,
+            state: SensorState::from(v.state),
+            config: SensorConfig::from(v.config),
+            recycle: v.recycle,
+        }
+    }
+}
+
+#[derive(Serialize)]
+pub struct SensorState {
+    presence: Option<bool>,
+    flag: Option<bool>,
+    last_updated: Option<String>,
+}
+
+impl std::convert::From<resource::sensor::State> for SensorState {
+    fn from(v: resource::sensor::State) -> Self {
+        Self {
+            presence: v.presence,
+            flag: v.flag,
+            last_updated: v.last_updated.map(|v| v.to_string()),
+        }
+    }
+}
+
+#[derive(Serialize)]
+pub struct SensorConfig {
+    on: bool,
+    reachable: Option<bool>,
+    battery: Option<u8>,
+}
+
+impl std::convert::From<resource::sensor::Config> for SensorConfig {
+    fn from(v: resource::sensor::Config) -> Self {
+        Self {
+            on: v.on,
+            reachable: v.reachable,
+            battery: v.battery,
+        }
+    }
+}
+
+#[derive(Serialize)]
 pub struct Scan {
     last_scan: Option<String>,
     resources: Vec<ScanResource>,

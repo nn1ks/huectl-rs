@@ -4,6 +4,7 @@ mod light;
 mod resourcelink;
 mod scene;
 mod schedule;
+mod sensor;
 mod value;
 
 use std::{fmt, net::IpAddr};
@@ -48,6 +49,12 @@ pub fn exec() {
             schedule::Arg::Create(v) => schedule::create(v),
             schedule::Arg::Delete(v) => schedule::delete(v),
         },
+        Subcommand::Sensor(v) => match v {
+            sensor::Arg::Set(v) => sensor::set(v),
+            sensor::Arg::Get(v) => sensor::get(v),
+            sensor::Arg::Search(v) => sensor::search(v),
+            sensor::Arg::Delete(v) => sensor::delete(v),
+        },
     };
 }
 
@@ -76,6 +83,8 @@ pub enum Subcommand {
     Scene(scene::Arg),
     /// Modifies, prints, creates or deletes schedules
     Schedule(schedule::Arg),
+    /// Modifies, prints, searches or deletes sensors
+    Sensor(sensor::Arg),
 }
 
 pub fn discover() {

@@ -48,7 +48,7 @@ impl Set {
 pub fn set(arg: Set) {
     let responses = match util::get_bridge().set_resourcelink(&arg.id, &arg.to_modifier()) {
         Ok(v) => v,
-        Err(e) => exit!("Failed to set config", e),
+        Err(e) => exit!("Failed to set resourcelink", e),
     };
     for i in responses {
         println!("{}", i);
