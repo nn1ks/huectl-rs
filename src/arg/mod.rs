@@ -1,6 +1,7 @@
 mod config;
 mod group;
 mod light;
+mod resourcelink;
 mod scene;
 mod schedule;
 mod value;
@@ -28,6 +29,12 @@ pub fn exec() {
             group::Arg::Get(v) => group::get(v),
             group::Arg::Create(v) => group::create(v),
             group::Arg::Delete(v) => group::delete(v),
+        },
+        Subcommand::Resourcelink(v) => match v {
+            resourcelink::Arg::Set(v) => resourcelink::set(v),
+            resourcelink::Arg::Get(v) => resourcelink::get(v),
+            resourcelink::Arg::Create(v) => resourcelink::create(v),
+            resourcelink::Arg::Delete(v) => resourcelink::delete(v),
         },
         Subcommand::Scene(v) => match v {
             scene::Arg::Set(v) => scene::set(v),
@@ -63,6 +70,8 @@ pub enum Subcommand {
     Light(light::Arg),
     /// Modifies, prints, creates or deletes groups
     Group(group::Arg),
+    /// Modifier, prints, creates or deletes resourcelinks
+    Resourcelink(resourcelink::Arg),
     /// Modifies, prints, creates or deletes scenes
     Scene(scene::Arg),
     /// Modifies, prints, creates or deletes schedules

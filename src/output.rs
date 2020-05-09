@@ -270,6 +270,48 @@ impl std::convert::From<resource::light::SoftwareUpdate> for LightSoftwareUpdate
 }
 
 #[derive(Serialize)]
+pub struct Resourcelink {
+    id: String,
+    name: String,
+    description: String,
+    owner: String,
+    kind: String,
+    class_id: u16,
+    recycle: bool,
+    links: Vec<ResourcelinkLink>,
+}
+
+impl std::convert::From<resource::Resourcelink> for Resourcelink {
+    fn from(v: resource::Resourcelink) -> Self {
+        Self {
+            id: v.id,
+            name: v.name,
+            description: v.description,
+            owner: v.owner,
+            kind: format!("{:?}", v.kind),
+            class_id: v.class_id,
+            recycle: v.recycle,
+            links: v.links.into_iter().map(ResourcelinkLink::from).collect(),
+        }
+    }
+}
+
+#[derive(Serialize)]
+pub struct ResourcelinkLink {
+    kind: String,
+    id: String,
+}
+
+impl std::convert::From<resource::resourcelink::Link> for ResourcelinkLink {
+    fn from(v: resource::resourcelink::Link) -> Self {
+        Self {
+            kind: format!("{:?}", v.kind),
+            id: v.id,
+        }
+    }
+}
+
+#[derive(Serialize)]
 pub struct Scene {
     id: String,
     name: String,
