@@ -36,13 +36,15 @@ FLAGS:
     -V, --version    Prints version information
 
 SUBCOMMANDS:
-    capabilities    Prints capabilities of resources
     config          Modifies or prints the bridge configuration
     discover        Discovers bridges in the local network
     group           Modifies, prints, creates or deletes groups
     help            Prints this message or the help of the given subcommand(s)
     light           Modifies, prints, searches or deletes lights
     register        Registers a new user on a bridge
+    resourcelink    Modifier, prints, creates or deletes resourcelinks
+    rule            Modifier, prints, creates or deletes rules
     scene           Modifies, prints, creates or deletes scenes
     schedule        Modifies, prints, creates or deletes schedules
+    sensor          Modifies, prints, searches or deletes sensors
 ```
