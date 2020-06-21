@@ -11,11 +11,13 @@ A command line interface to Philips Hue using the [huelib](https://github.com/yu
 
 ### Building from source
 
-```sh
-git clone https://github.com/yuqio/huectl-rs
-cd huectl-rs
-cargo install --path .
-```
+1. Install and setup [Rust](https://www.rust-lang.org)
+2. Run `cargo install huectl`
+
+### Pre-compiled binary
+
+1. Download a binary from the [release page](https://github.com/yuqio/huectl-rs/releases)
+2. Move the binary to your `PATH`
 
 ## Configuration
 
