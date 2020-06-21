@@ -1,8 +1,9 @@
 # huectl-rs
 
-[![Build](https://img.shields.io/github/workflow/status/yuqio/huectl-rs/CI)](https://github.com/yuqio/huectl-rs/actions)
-[![Version](https://img.shields.io/github/v/release/yuqio/huectl-rs?color=orange)](https://github.com/yuqio/huectl-rs/releases)
-[![License](https://img.shields.io/github/license/yuqio/huectl-rs?color=yellow)](https://github.com/yuqio/huectl-rs/blob/master/LICENSE)
+[![Build](https://img.shields.io/github/workflow/status/yuqio/huectl-rs/CI?labelColor=4c566a&color=a3be8c&logo=github)](https://github.com/yuqio/huectl-rs/actions)
+[![Crate](https://img.shields.io/crates/v/huectl?labelColor=4c566a&color=81a1c1&logo=rust)](https://crates.io/crates/huectl)
+[![License](https://img.shields.io/crates/l/huectl?labelColor=4c566a&color=b48ead)](https://github.com/yuqio/huectl-rs/blob/master/LICENSE)
+[![Downloads](https://img.shields.io/crates/d/huectl?labelColor=4c566a&color=5e81ac)](https://crates.io/crates/huectl)
 
 A command line interface to Philips Hue using the [huelib](https://github.com/yuqio/huelib-rs) crate.
 
