@@ -1,6 +1,5 @@
 use crate::config;
 
-#[macro_export]
 macro_rules! exit {
     ( $description:expr ) => {{
         eprintln!("{}", $description);
