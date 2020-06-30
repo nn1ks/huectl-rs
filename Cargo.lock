@@ -157,7 +157,7 @@ dependencies = [
 
 [[package]]
 name = "huectl"
-version = "0.5.1"
+version = "0.5.2"
 dependencies = [
  "envconfig",
  "envconfig_derive",
@@ -169,9 +169,9 @@ dependencies = [
 
 [[package]]
 name = "huelib"
-version = "0.7.0"
+version = "0.8.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "33acc7377496ec1d8b784e0ee8bf3aa067c48a7d8c0ed3da4c28c7381f36f3b5"
+checksum = "b2cd050d1669724d0031d45bdb31542873f6efe0e5f5c0ffa0cd089205a9cced"
 dependencies = [
  "chrono",
  "serde",
@@ -414,9 +414,9 @@ dependencies = [
 
 [[package]]
 name = "serde_json"
-version = "1.0.55"
+version = "1.0.56"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "ec2c5d7e739bc07a3e73381a39d61fdb5f671c60c1df26a130690665803d8226"
+checksum = "3433e879a558dde8b5e8feb2a04899cf34fdde1fafb894687e52105fc1162ac3"
 dependencies = [
  "itoa",
  "ryu",
