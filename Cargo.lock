@@ -169,9 +169,9 @@ dependencies = [
 
 [[package]]
 name = "huelib"
-version = "0.8.0"
+version = "0.9.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b2cd050d1669724d0031d45bdb31542873f6efe0e5f5c0ffa0cd089205a9cced"
+checksum = "3e1b945b60519c37f4feb5e376bba2474a9ba3702ce648c098ed833d604b591d"
 dependencies = [
  "chrono",
  "serde",
