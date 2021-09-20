@@ -119,11 +119,11 @@ checksum = "212d0f5754cb6769937f4501cc0e67f4f4483c8d2c3e1e922ee9edbe4ab4c7c0"
 
 [[package]]
 name = "envconfig"
-version = "0.8.0"
+version = "0.10.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "ca475bc6bdc0c0e3c74dfcc08cf4b39a5d43f1d597afa4d36d069f17b2108f5d"
+checksum = "ea81cc7e21f55a9d9b1efb6816904978d0bfbe31a50347cb24b2e75564bcac9b"
 dependencies = [
- "thiserror",
+ "envconfig_derive 0.10.0",
 ]
 
 [[package]]
@@ -131,6 +131,17 @@ name = "envconfig_derive"
 version = "0.8.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "0bb6cec7a023cdb44f38c5b99c26f520d279eec7265d9c957970d8b073bb2f17"
+dependencies = [
+ "proc-macro2",
+ "quote",
+ "syn",
+]
+
+[[package]]
+name = "envconfig_derive"
+version = "0.10.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "7dfca278e5f84b45519acaaff758ebfa01f18e96998bc24b8f1b722dd804b9bf"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -160,7 +171,7 @@ name = "huectl"
 version = "0.5.2"
 dependencies = [
  "envconfig",
- "envconfig_derive",
+ "envconfig_derive 0.8.0",
  "huelib",
  "serde",
  "serde_json",
